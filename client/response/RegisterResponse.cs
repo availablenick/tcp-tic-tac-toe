@@ -5,7 +5,7 @@ namespace TicTacToe.Client
 		public RegisterResponse(int statusCode) : base(statusCode) { }
 		public override string ParseStatusCode()
 		{
-			switch (StatusCode)
+			switch (this.StatusCode)
 			{
 				case 0:
 					return "Registered successfully";

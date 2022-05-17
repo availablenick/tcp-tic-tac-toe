@@ -6,7 +6,7 @@ namespace TicTacToe.Server
 		public RegisterRequest(params string[] parameters) : base(parameters) { }
 		public override string ExecuteAndCreateResponseMessage()
 		{
-			System.Console.WriteLine($"received: register {parameters[0]} {parameters[1]}");
+			System.Console.WriteLine($"received: register {this.Parameters[0]} {this.Parameters[1]}");
 			System.Console.WriteLine("Register work done");
 
 			return $"register 1";

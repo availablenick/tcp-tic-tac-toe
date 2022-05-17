@@ -13,7 +13,7 @@ namespace TicTacToe.Client
 		public override void TakeEffect(Socket socket, Byte[] receiveBuffer,
 			Byte[] sendBuffer)
 		{
-			string requestMessage = $"register {parameters[0]} {parameters[1]}";
+			string requestMessage = $"register {this.Parameters[0]} {this.Parameters[1]}";
 			BufferHelper.WriteMessageToBuffer(sendBuffer, requestMessage);
 			socket.Send(sendBuffer, requestMessage.Length, 0);
 			Console.WriteLine($"Client message: {requestMessage}");
