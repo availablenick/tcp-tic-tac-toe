@@ -28,9 +28,10 @@ namespace TicTacToe.Server
 					break;
 				}
 
+				Console.Write($"[{Thread.CurrentThread.ManagedThreadId}] ");
 				string bufferMessage = BufferHelper.GetBufferMessage(receiveBuffer, numberOfReceivedBytes);
-				Console.WriteLine($"[{Thread.CurrentThread.ManagedThreadId}] {bufferMessage}");
-				string responseMessage = "reply";
+				Request request = RequestParser.Parse(bufferMessage);
+				string responseMessage = request.ExecuteAndCreateResponseMessage();
 				BufferHelper.WriteMessageToBuffer(sendBuffer, responseMessage);
 				socket.Send(sendBuffer, responseMessage.Length, 0);
 			}

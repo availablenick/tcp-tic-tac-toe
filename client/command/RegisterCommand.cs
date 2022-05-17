@@ -20,6 +20,8 @@ namespace TicTacToe.Client
 			int numberOfReceivedBytes = socket.Receive(receiveBuffer, receiveBuffer.Length, 0);
 			string responseMessage = BufferHelper.GetBufferMessage(receiveBuffer, numberOfReceivedBytes);
 			Console.WriteLine($"Server reply: {responseMessage}");
+			Response response = ResponseParser.Parse(BufferHelper.GetBufferMessage(receiveBuffer, numberOfReceivedBytes));
+			Console.WriteLine(response.ParseStatusCode());
 		}
 	}
 }
