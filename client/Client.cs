@@ -26,13 +26,18 @@ namespace TicTacToe.Client
 					break;
 				}
 
-				string requestMessage = "message";
-				BufferHelper.WriteMessageToBuffer(sendBuffer, requestMessage);
-				socket.Send(sendBuffer, requestMessage.Length, 0);
-				Console.WriteLine($"Client message: {requestMessage}");
-				int numberOfReceivedBytes = socket.Receive(receiveBuffer, receiveBuffer.Length, 0);
-				string responseMessage = BufferHelper.GetBufferMessage(receiveBuffer, numberOfReceivedBytes);
-				Console.WriteLine($"Server reply: {responseMessage}");
+				try
+				{
+					Command command = CommandParser.Parse(line);
+					if (command != null)
+					{
+						command.TakeEffect(socket, receiveBuffer, sendBuffer);
+					}
+				}
+				catch (InvalidCommandException exception)
+				{
+					Console.WriteLine(exception.Message);
+				}
 			}
 
 			Console.WriteLine("End");
