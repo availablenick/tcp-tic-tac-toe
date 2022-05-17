@@ -14,31 +14,8 @@ namespace TicTacToe.Client
 				return;
 			}
 
-			Byte[] receiveBuffer = new Byte[128];
-			Byte[] sendBuffer = new Byte[128];
-			string line;
-			while (true)
-			{
-				Console.Write("> ");
-				line = Console.ReadLine();
-				if (line == null)
-				{
-					break;
-				}
-
-				try
-				{
-					Command command = CommandParser.Parse(line);
-					if (command != null)
-					{
-						command.TakeEffect(socket, receiveBuffer, sendBuffer);
-					}
-				}
-				catch (InvalidCommandException exception)
-				{
-					Console.WriteLine(exception.Message);
-				}
-			}
+			UserInputReader reader = new UserInputReader();
+			reader.Read(socket);
 
 			Console.WriteLine("End");
 			socket.Close();
