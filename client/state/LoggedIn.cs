@@ -3,11 +3,11 @@ using System.Net.Sockets;
 
 namespace TicTacToe.Client
 {
-	public class LoggedOut : IUserState
+	public class LoggedIn : IUserState
 	{
 		public UserInputReader Reader { get; set; }
 
-		public LoggedOut(UserInputReader reader)
+		public LoggedIn(UserInputReader reader)
 		{
 			this.Reader = reader;
 		}
@@ -17,15 +17,11 @@ namespace TicTacToe.Client
 		{
 			if (command is LoginCommand)
 			{
-				int statusCode = command.TakeEffect(socket, receiveBuffer, sendBuffer);
-				if (statusCode == 0)
-				{
-					this.Reader.UserState = new LoggedIn(this.Reader);
-				}
+				Console.WriteLine("You are already logged in");
 			}
 			else if (command is RegisterCommand)
 			{
-				command.TakeEffect(socket, receiveBuffer, sendBuffer);
+				Console.WriteLine("You need to log out first");
 			}
 		}
 	}

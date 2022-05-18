@@ -41,6 +41,17 @@ namespace TicTacToe.Client
 				string command = groups[1].Value.ToLower();
 				switch (command)
 				{
+					case "login":
+						if (HasCorrectNumberOfParameters(
+								LoginCommand.NumberOfParameters, groups))
+						{
+							return new LoginCommand(CreateParameterArray(
+								LoginCommand.NumberOfParameters, groups));
+						}
+
+						throw new InvalidCommandException(
+							LoginCommand.WrongNumberOfParametersMessage);
+
 					case "register":
 						if (HasCorrectNumberOfParameters(
 							RegisterCommand.NumberOfParameters, groups))

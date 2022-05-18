@@ -17,7 +17,7 @@ namespace TicTacToe.Client
 			}
 		}
 
-		public abstract void TakeEffect(Socket socket, Byte[] receiveBuffer,
+		public abstract int TakeEffect(Socket socket, Byte[] receiveBuffer,
 			Byte[] sendBuffer);
 	}
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Threading;
 
@@ -25,13 +26,17 @@ namespace TicTacToe.Server
 
 			Console.WriteLine("Done");
 
+			Mutex mutex = new Mutex();
+			Dictionary<string, string> onlineUsers = new Dictionary<string, string>();
+
 			while (true)
 			{
 				Console.WriteLine("Waiting for incoming connections...");
 				Socket connectionSocket = listeningSocket.Accept();
 				Console.WriteLine("Connection accepted...");
 
-				ThreadDataWrapper wrapper = new ThreadDataWrapper(connectionSocket);
+				ThreadDataWrapper wrapper = new ThreadDataWrapper(
+					connectionSocket, mutex, onlineUsers);
 				Thread thread = new Thread(new ThreadStart(wrapper.HandleConnection));
 				thread.Start();
 

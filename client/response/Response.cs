@@ -4,7 +4,7 @@ namespace TicTacToe.Client
 {
 	public abstract class Response
 	{
-		protected int StatusCode;
+		public int StatusCode { get; }
 
 		public Response(int statusCode)
 		{
