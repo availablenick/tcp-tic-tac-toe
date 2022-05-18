@@ -17,6 +17,12 @@ namespace TicTacToe.Server
 				return;
 			}
 
+			int statusCode = FileHelper.CreateUserDataFile();
+			if (statusCode != 0)
+			{
+				return;
+			}
+
 			Console.WriteLine("Done");
 
 			while (true)

@@ -16,10 +16,8 @@ namespace TicTacToe.Client
 			string requestMessage = $"register {this.Parameters[0]} {this.Parameters[1]}";
 			BufferHelper.WriteMessageToBuffer(sendBuffer, requestMessage);
 			socket.Send(sendBuffer, requestMessage.Length, 0);
-			Console.WriteLine($"Client message: {requestMessage}");
 			int numberOfReceivedBytes = socket.Receive(receiveBuffer, receiveBuffer.Length, 0);
 			string responseMessage = BufferHelper.GetBufferMessage(receiveBuffer, numberOfReceivedBytes);
-			Console.WriteLine($"Server reply: {responseMessage}");
 			Response response = ResponseParser.Parse(BufferHelper.GetBufferMessage(receiveBuffer, numberOfReceivedBytes));
 			Console.WriteLine(response.ParseStatusCode());
 		}
