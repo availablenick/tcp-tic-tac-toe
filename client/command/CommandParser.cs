@@ -52,6 +52,9 @@ namespace TicTacToe.Client
 						throw new InvalidCommandException(
 							LoginCommand.WrongNumberOfParametersMessage);
 
+					case "logout":
+						return new LogoutCommand();
+
 					case "register":
 						if (HasCorrectNumberOfParameters(
 							RegisterCommand.NumberOfParameters, groups))

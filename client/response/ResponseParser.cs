@@ -17,6 +17,8 @@ namespace TicTacToe.Client
 				{
 					case "login":
 						return new LoginResponse(Int32.Parse(groups[3].Value));
+					case "logout":
+						return new LogoutResponse(Int32.Parse(groups[3].Value));
 					case "register":
 						return new RegisterResponse(Int32.Parse(groups[3].Value));
 				}

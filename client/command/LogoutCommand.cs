@@ -3,16 +3,15 @@ using System.Net.Sockets;
 
 namespace TicTacToe.Client
 {
-	public class LoginCommand : Command
+	public class LogoutCommand : Command
 	{
-		public const int NumberOfParameters = 2;
+		public const int NumberOfParameters = 0;
 		public const string WrongNumberOfParametersMessage =
-			"Wrong number of parameters for login command. Usage: " +
-			"login <username> <password>";
-		public LoginCommand(params string[] parameters) : base(parameters) { }
+			"Wrong number of parameters for logout command. Usage: logout";
+		public LogoutCommand(params string[] parameters) : base(parameters) { }
 		public override int TakeEffect(CommandData data)
 		{
-			string requestMessage = $"login {this.Parameters[0]} {this.Parameters[1]}";
+			string requestMessage = $"logout {data.CurrentUsername}";
 			BufferHelper.WriteMessageToBuffer(data.SendBuffer, requestMessage);
 			data.ServerSocket.Send(data.SendBuffer, requestMessage.Length, 0);
 

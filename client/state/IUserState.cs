@@ -5,7 +5,6 @@ namespace TicTacToe.Client
 {
 	public interface IUserState
 	{
-		public void ExecuteCommand(Command command, Socket socket,
-			Byte[] receiveBuffer, Byte[] sendBuffer);
+		public void ExecuteCommand(Command command, CommandData data);
 	}
 }

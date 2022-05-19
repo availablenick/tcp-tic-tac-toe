@@ -1,12 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Net.Sockets;
 
 namespace TicTacToe.Client
 {
 	public abstract class Command
 	{
-		protected List<string> Parameters;
+		public List<string> Parameters;
 
 		public Command(params string[] parameters)
 		{
@@ -17,7 +16,6 @@ namespace TicTacToe.Client
 			}
 		}
 
-		public abstract int TakeEffect(Socket socket, Byte[] receiveBuffer,
-			Byte[] sendBuffer);
+		public abstract int TakeEffect(CommandData data);
 	}
 }

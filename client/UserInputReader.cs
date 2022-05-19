@@ -9,9 +9,10 @@ namespace TicTacToe.Client
 
 		public void Read(Socket socket)
 		{
-			this.UserState = new LoggedOut(this);
+			this.UserState = new LoggedOut(this);			
 			Byte[] receiveBuffer = new Byte[128];
 			Byte[] sendBuffer = new Byte[128];
+			CommandData data = new CommandData(socket, receiveBuffer, sendBuffer, "");
 			string line;
 			while (true)
 			{
@@ -27,7 +28,7 @@ namespace TicTacToe.Client
 					Command command = CommandParser.Parse(line);
 					if (command != null)
 					{
-						this.UserState.ExecuteCommand(command, socket, receiveBuffer, sendBuffer);
+						this.UserState.ExecuteCommand(command, data);
 					}
 				}
 				catch (InvalidCommandException exception)

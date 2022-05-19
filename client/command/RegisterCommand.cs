@@ -10,15 +10,17 @@ namespace TicTacToe.Client
 			"Wrong number of parameters for register command. Usage: " +
 			"register <username> <password>";
 		public RegisterCommand(params string[] parameters) : base(parameters) { }
-		public override int TakeEffect(Socket socket, Byte[] receiveBuffer,
-			Byte[] sendBuffer)
+		public override int TakeEffect(CommandData data)
 		{
 			string requestMessage = $"register {this.Parameters[0]} {this.Parameters[1]}";
-			BufferHelper.WriteMessageToBuffer(sendBuffer, requestMessage);
-			socket.Send(sendBuffer, requestMessage.Length, 0);
-			int numberOfReceivedBytes = socket.Receive(receiveBuffer, receiveBuffer.Length, 0);
-			string responseMessage = BufferHelper.GetBufferMessage(receiveBuffer, numberOfReceivedBytes);
-			Response response = ResponseParser.Parse(BufferHelper.GetBufferMessage(receiveBuffer, numberOfReceivedBytes));
+			BufferHelper.WriteMessageToBuffer(data.SendBuffer, requestMessage);
+			data.ServerSocket.Send(data.SendBuffer, requestMessage.Length, 0);
+
+			int numberOfReceivedBytes = data.ServerSocket.Receive(data.ReceiveBuffer,
+				data.ReceiveBuffer.Length, 0);
+			string responseMessage = BufferHelper.GetBufferMessage(data.ReceiveBuffer,
+				numberOfReceivedBytes);
+			Response response = ResponseParser.Parse(responseMessage);
 			Console.WriteLine(response.ParseStatusCode());
 
 			return response.StatusCode;

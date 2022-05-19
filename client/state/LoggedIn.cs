@@ -12,12 +12,20 @@ namespace TicTacToe.Client
 			this.Reader = reader;
 		}
 
-		public void ExecuteCommand(Command command, Socket socket,
-			Byte[] receiveBuffer, Byte[] sendBuffer)
+		public void ExecuteCommand(Command command, CommandData data)
 		{
 			if (command is LoginCommand)
 			{
 				Console.WriteLine("You are already logged in");
+			}
+			else if (command is LogoutCommand)
+			{
+				int statusCode = command.TakeEffect(data);
+				if (statusCode == 0)
+				{
+					this.Reader.UserState = new LoggedOut(this.Reader);
+					data.CurrentUsername = "";
+				}
 			}
 			else if (command is RegisterCommand)
 			{
