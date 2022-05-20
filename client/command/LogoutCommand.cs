@@ -12,8 +12,7 @@ namespace TicTacToe.Client
 		public override int Execute(Socket serverSocket, Byte[] receiveBuffer,
 			Byte[] sendBuffer)
 		{
-			string localEndpoint = serverSocket.LocalEndPoint.ToString();
-			string requestMessage = $"logout {localEndpoint}";
+			string requestMessage = $"logout";
 			BufferHelper.WriteMessageToBuffer(sendBuffer, requestMessage);
 			serverSocket.Send(sendBuffer, requestMessage.Length, 0);
 

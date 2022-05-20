@@ -1,13 +1,16 @@
 using System;
 using System.IO;
-using System.Net;
+using System.Net.Sockets;
+using System.Threading;
 
 namespace TicTacToe.Server
 {
 	public class LoginRequest : Request
 	{
 		public const int NumberOfParameters = 2;
+
 		public LoginRequest(params string[] parameters) : base(parameters) { }
+
 		private int AuthenticateUser(string username, string password)
 		{
 			string filepath = $"{Directory.GetCurrentDirectory()}/data/users";
@@ -58,30 +61,26 @@ namespace TicTacToe.Server
 			}
 		}
 
-		public override string Fulfill(RequestData data)
+		public override string Fulfill(Socket clientSocket, Mutex mutex)
 		{
 			string username = this.Parameters[0];
 			string password = this.Parameters[1];
 			int statusCode;
-			data.MutexLock.WaitOne();
-			if (data.OnlineUsers.ContainsKey(username)) {
+			mutex.WaitOne();
+			if (Server.EndpointByUsername.ContainsKey(username)) {
 				statusCode = 2;
-				data.MutexLock.ReleaseMutex();
 			}
 			else
 			{
-				data.MutexLock.ReleaseMutex();
 				statusCode = AuthenticateUser(username, password);
 				if (statusCode == 0)
 				{
-					string remoteEndpoint = data.ClientSocket.RemoteEndPoint.ToString();
-					data.MutexLock.WaitOne();
-					if (!data.OnlineUsers.ContainsKey(username)) {
-						data.OnlineUsers.Add(remoteEndpoint, username);
-					}
-					data.MutexLock.ReleaseMutex();
+					string remoteEndpoint = clientSocket.RemoteEndPoint.ToString();
+					Server.AddOnlineUser(username, remoteEndpoint);
 				}
 			}
+
+			mutex.ReleaseMutex();
 
 			return $"login {statusCode}";
 		}

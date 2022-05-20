@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Net.Sockets;
+using System.Threading;
 
 namespace TicTacToe.Server
 {
@@ -15,6 +17,6 @@ namespace TicTacToe.Server
 			}
 		}
 
-		public abstract string Fulfill(RequestData data);
+		public abstract string Fulfill(Socket clientSocket, Mutex mutex);
 	}
 }

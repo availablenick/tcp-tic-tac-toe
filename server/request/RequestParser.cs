@@ -52,14 +52,7 @@ namespace TicTacToe.Server
 						throw new InvalidRequestException();
 
 					case "logout":
-						if (HasCorrectNumberOfParameters(
-								LogoutRequest.NumberOfParameters, groups))
-						{
-							return new LogoutRequest(CreateParameterArray(
-								LogoutRequest.NumberOfParameters, groups));
-						}
-
-						throw new InvalidRequestException();
+						return new LogoutRequest();
 
 					case "register":
 						if (HasCorrectNumberOfParameters(

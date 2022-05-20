@@ -1,12 +1,16 @@
 using System;
 using System.IO;
+using System.Net.Sockets;
+using System.Threading;
 
 namespace TicTacToe.Server
 {
 	public class RegisterRequest : Request
 	{
 		public const int NumberOfParameters = 2;
+
 		public RegisterRequest(params string[] parameters) : base(parameters) { }
+
 		private int AddUser(string username, string password)
 		{
 			string filepath = $"{Directory.GetCurrentDirectory()}/data/users";
@@ -42,9 +46,12 @@ namespace TicTacToe.Server
 			}
 		}
 
-		public override string Fulfill(RequestData data)
+		public override string Fulfill(Socket clientSocket, Mutex mutex)
 		{
+			mutex.WaitOne();
 			int statusCode = AddUser(this.Parameters[0], this.Parameters[1]);
+			mutex.ReleaseMutex();
+
 			return $"register {statusCode}";
 		}
 	}
