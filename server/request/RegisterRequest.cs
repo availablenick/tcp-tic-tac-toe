@@ -42,7 +42,7 @@ namespace TicTacToe.Server
 			}
 		}
 
-		public override string ExecuteAndCreateResponseMessage(RequestData data)
+		public override string Fulfill(RequestData data)
 		{
 			int statusCode = AddUser(this.Parameters[0], this.Parameters[1]);
 			return $"register {statusCode}";

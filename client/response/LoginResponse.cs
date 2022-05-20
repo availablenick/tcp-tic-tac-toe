@@ -3,7 +3,7 @@ namespace TicTacToe.Client
 	public class LoginResponse : Response
 	{
 		public LoginResponse(int statusCode) : base(statusCode) { }
-		public override string ParseStatusCode()
+		public override string ToString()
 		{
 			switch (this.StatusCode)
 			{

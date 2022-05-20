@@ -10,18 +10,19 @@ namespace TicTacToe.Client
 			"Wrong number of parameters for login command. Usage: " +
 			"login <username> <password>";
 		public LoginCommand(params string[] parameters) : base(parameters) { }
-		public override int TakeEffect(CommandData data)
+		public override int Execute(Socket serverSocket, Byte[] receiveBuffer,
+			Byte[] sendBuffer)
 		{
 			string requestMessage = $"login {this.Parameters[0]} {this.Parameters[1]}";
-			BufferHelper.WriteMessageToBuffer(data.SendBuffer, requestMessage);
-			data.ServerSocket.Send(data.SendBuffer, requestMessage.Length, 0);
+			BufferHelper.WriteMessageToBuffer(sendBuffer, requestMessage);
+			serverSocket.Send(sendBuffer, requestMessage.Length, 0);
 
-			int numberOfReceivedBytes = data.ServerSocket.Receive(data.ReceiveBuffer,
-				data.ReceiveBuffer.Length, 0);
-			string responseMessage = BufferHelper.GetBufferMessage(data.ReceiveBuffer,
+			int numberOfReceivedBytes = serverSocket.Receive(receiveBuffer,
+				receiveBuffer.Length, 0);
+			string responseMessage = BufferHelper.GetBufferMessage(receiveBuffer,
 				numberOfReceivedBytes);
 			Response response = ResponseParser.Parse(responseMessage);
-			Console.WriteLine(response.ParseStatusCode());
+			Console.WriteLine(response.ToString());
 
 			return response.StatusCode;
 		}

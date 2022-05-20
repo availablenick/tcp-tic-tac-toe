@@ -5,14 +5,14 @@ namespace TicTacToe.Client
 {
 	public class LoggedIn : IUserState
 	{
-		public UserInputReader Reader { get; set; }
+		public InputHandler Handler { get; set; }
 
-		public LoggedIn(UserInputReader reader)
+		public LoggedIn(InputHandler handler)
 		{
-			this.Reader = reader;
+			this.Handler = handler;
 		}
 
-		public void ExecuteCommand(Command command, CommandData data)
+		public void ExecuteCommand(Command command)
 		{
 			if (command is LoginCommand)
 			{
@@ -20,11 +20,11 @@ namespace TicTacToe.Client
 			}
 			else if (command is LogoutCommand)
 			{
-				int statusCode = command.TakeEffect(data);
+				int statusCode = command.Execute(this.Handler.ServerSocket,
+					this.Handler.ReceiveBuffer, this.Handler.SendBuffer);
 				if (statusCode == 0)
 				{
-					this.Reader.UserState = new LoggedOut(this.Reader);
-					data.CurrentUsername = "";
+					this.Handler.UserState = new LoggedOut(this.Handler);
 				}
 			}
 			else if (command is RegisterCommand)

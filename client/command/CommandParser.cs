@@ -33,7 +33,7 @@ namespace TicTacToe.Client
 
 		public static Command Parse(string input)
 		{
-			Regex regex = new Regex(@"(\w+)(\s+(\w+))?(\s+(\w+))?");
+			Regex regex = new Regex(@"([\x21-\x80]+)(\s+([\x21-\x80]+))?(\s+([\x21-\x80]+))?");
 			MatchCollection matches = regex.Matches(input);
 			foreach (Match match in matches)
 			{
@@ -57,7 +57,7 @@ namespace TicTacToe.Client
 
 					case "register":
 						if (HasCorrectNumberOfParameters(
-							RegisterCommand.NumberOfParameters, groups))
+								RegisterCommand.NumberOfParameters, groups))
 						{
 							return new RegisterCommand(CreateParameterArray(
 								RegisterCommand.NumberOfParameters, groups));

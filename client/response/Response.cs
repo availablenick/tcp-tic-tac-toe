@@ -11,6 +11,6 @@ namespace TicTacToe.Client
 			this.StatusCode = statusCode;
 		}
 
-		public abstract string ParseStatusCode();
+		public abstract override string ToString();
 	}
 }

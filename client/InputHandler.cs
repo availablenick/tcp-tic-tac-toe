@@ -3,16 +3,23 @@ using System.Net.Sockets;
 
 namespace TicTacToe.Client
 {
-	public class UserInputReader
+	public class InputHandler
 	{
 		public IUserState UserState { get; set; }
+		public Socket ServerSocket { get; }
+		public Byte[] ReceiveBuffer;
+		public Byte[] SendBuffer;
 
-		public void Read(Socket socket)
+		public InputHandler(Socket serverSocket)
 		{
-			this.UserState = new LoggedOut(this);			
-			Byte[] receiveBuffer = new Byte[128];
-			Byte[] sendBuffer = new Byte[128];
-			CommandData data = new CommandData(socket, receiveBuffer, sendBuffer, "");
+			this.ServerSocket = serverSocket;
+			this.ReceiveBuffer = new Byte[128];
+			this.SendBuffer = new Byte[128];
+			this.UserState = new LoggedOut(this);
+		}
+
+		public void HandleInput()
+		{
 			string line;
 			while (true)
 			{
@@ -28,7 +35,7 @@ namespace TicTacToe.Client
 					Command command = CommandParser.Parse(line);
 					if (command != null)
 					{
-						this.UserState.ExecuteCommand(command, data);
+						this.UserState.ExecuteCommand(command);
 					}
 				}
 				catch (InvalidCommandException exception)

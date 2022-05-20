@@ -14,8 +14,8 @@ namespace TicTacToe.Client
 				return;
 			}
 
-			UserInputReader reader = new UserInputReader();
-			reader.Read(socket);
+			InputHandler handler = new InputHandler(socket);
+			handler.HandleInput();
 
 			Console.WriteLine("End");
 			socket.Close();

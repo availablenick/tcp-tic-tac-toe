@@ -58,7 +58,7 @@ namespace TicTacToe.Server
 			}
 		}
 
-		public override string ExecuteAndCreateResponseMessage(RequestData data)
+		public override string Fulfill(RequestData data)
 		{
 			string username = this.Parameters[0];
 			string password = this.Parameters[1];
@@ -74,10 +74,10 @@ namespace TicTacToe.Server
 				statusCode = AuthenticateUser(username, password);
 				if (statusCode == 0)
 				{
-					string endpoint = data.ClientSocket.RemoteEndPoint.ToString();
+					string remoteEndpoint = data.ClientSocket.RemoteEndPoint.ToString();
 					data.MutexLock.WaitOne();
 					if (!data.OnlineUsers.ContainsKey(username)) {
-						data.OnlineUsers.Add(username, endpoint);
+						data.OnlineUsers.Add(remoteEndpoint, username);
 					}
 					data.MutexLock.ReleaseMutex();
 				}

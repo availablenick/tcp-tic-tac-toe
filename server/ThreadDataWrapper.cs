@@ -40,7 +40,7 @@ namespace TicTacToe.Server
 				Console.Write($"[{Thread.CurrentThread.ManagedThreadId}] ");
 				string bufferMessage = BufferHelper.GetBufferMessage(receiveBuffer, numberOfReceivedBytes);
 				Request request = RequestParser.Parse(bufferMessage);
-				string responseMessage = request.ExecuteAndCreateResponseMessage(requestData);
+				string responseMessage = request.Fulfill(requestData);
 				BufferHelper.WriteMessageToBuffer(sendBuffer, responseMessage);
 				this._socket.Send(sendBuffer, responseMessage.Length, 0);
 			}

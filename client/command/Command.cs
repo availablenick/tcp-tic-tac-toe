@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Net.Sockets;
 
 namespace TicTacToe.Client
 {
@@ -16,6 +17,7 @@ namespace TicTacToe.Client
 			}
 		}
 
-		public abstract int TakeEffect(CommandData data);
+		public abstract int Execute(Socket serverSocket, Byte[] receiveBuffer,
+			Byte[] sendBuffer);
 	}
 }

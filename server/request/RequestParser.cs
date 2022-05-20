@@ -33,7 +33,7 @@ namespace TicTacToe.Server
 
 		public static Request Parse(string message)
 		{
-			Regex regex = new Regex(@"(\w+)(\s+(\w+))?(\s+(\w+))?");
+			Regex regex = new Regex(@"([\x21-\x80]+)(\s+([\x21-\x80]+))?(\s+([\x21-\x80]+))?");
 			MatchCollection matches = regex.Matches(message);
 			foreach (Match match in matches)
 			{

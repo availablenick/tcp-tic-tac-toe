@@ -5,6 +5,6 @@ namespace TicTacToe.Client
 {
 	public interface IUserState
 	{
-		public void ExecuteCommand(Command command, CommandData data);
+		public void ExecuteCommand(Command command);
 	}
 }

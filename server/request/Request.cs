@@ -15,6 +15,6 @@ namespace TicTacToe.Server
 			}
 		}
 
-		public abstract string ExecuteAndCreateResponseMessage(RequestData data);
+		public abstract string Fulfill(RequestData data);
 	}
 }

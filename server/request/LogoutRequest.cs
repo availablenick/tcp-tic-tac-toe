@@ -8,13 +8,13 @@ namespace TicTacToe.Server
 	{
 		public const int NumberOfParameters = 1;
 		public LogoutRequest(params string[] parameters) : base(parameters) { }
-		public override string ExecuteAndCreateResponseMessage(RequestData data)
+		public override string Fulfill(RequestData data)
 		{
-			string username = this.Parameters[0];
+			string remoteEndpoint = this.Parameters[0];
 			int statusCode;
 			data.MutexLock.WaitOne();
-			if (data.OnlineUsers.ContainsKey(username)) {
-				data.OnlineUsers.Remove(username);
+			if (data.OnlineUsers.ContainsKey(remoteEndpoint)) {
+				data.OnlineUsers.Remove(remoteEndpoint);
 				data.MutexLock.ReleaseMutex();
 				statusCode = 0;
 			}
