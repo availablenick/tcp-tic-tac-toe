@@ -25,9 +25,22 @@ namespace TicTacToe.Server
 
 		public static void Main(string[] args)
 		{
-			Console.WriteLine("Initializing server...");
+			int port = 3000;
+			if (args.Length > 0)
+			{
+				try
+				{
+					port = Int32.Parse(args[0]);
+				}
+				catch (FormatException)
+				{
+					Console.WriteLine("Specified port has invalid format");
+				}
+			}
 
-			Socket listeningSocket = SocketHelper.CreateListeningSocket(3000);
+			Console.WriteLine($"Initializing server on port {port}...");
+
+			Socket listeningSocket = SocketHelper.CreateListeningSocket(port);
 			if (listeningSocket == null)
 			{
 				Console.WriteLine("Could not create socket");
