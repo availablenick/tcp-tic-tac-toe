@@ -13,7 +13,11 @@ namespace TicTacToe.Client
 
 		public void ExecuteCommand(Command command)
 		{
-			if (command is LoginCommand)
+			if (command is ListCommand)
+			{
+				Console.WriteLine("You must log in first");
+			}
+			else if (command is LoginCommand)
 			{
 				int statusCode = command.Execute(this.Handler.ServerSocket,
 					this.Handler.ReceiveBuffer, this.Handler.SendBuffer);

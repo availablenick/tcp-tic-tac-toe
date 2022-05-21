@@ -19,8 +19,8 @@ namespace TicTacToe.Server
 		{
 			Console.WriteLine($"[{Thread.CurrentThread.ManagedThreadId}] New client connected");
 
-			Byte[] receiveBuffer = new Byte[128];
-			Byte[] sendBuffer = new Byte[128];
+			Byte[] receiveBuffer = new Byte[1024];
+			Byte[] sendBuffer = new Byte[1024];
 			int numberOfReceivedBytes;
 			while (true)
 			{

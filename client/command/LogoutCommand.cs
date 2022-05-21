@@ -12,7 +12,7 @@ namespace TicTacToe.Client
 		public override int Execute(Socket serverSocket, Byte[] receiveBuffer,
 			Byte[] sendBuffer)
 		{
-			string requestMessage = $"logout";
+			string requestMessage = "logout";
 			BufferHelper.WriteMessageToBuffer(sendBuffer, requestMessage);
 			serverSocket.Send(sendBuffer, requestMessage.Length, 0);
 
@@ -23,7 +23,7 @@ namespace TicTacToe.Client
 			Response response = ResponseParser.Parse(responseMessage);
 			Console.WriteLine(response.ToString());
 
-			return response.StatusCode;
+			return Int32.Parse(response.Parameters[response.Parameters.Count - 1]);
 		}
 	}
 }

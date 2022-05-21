@@ -1,11 +1,15 @@
+using System;
+
 namespace TicTacToe.Client
 {
 	public class LogoutResponse : Response
 	{
-		public LogoutResponse(int statusCode) : base(statusCode) { }
+		public const int NumberOfParameters = 1;
+		public LogoutResponse(params string[] parameters) : base(parameters) { }
 		public override string ToString()
 		{
-			switch (this.StatusCode)
+			int statusCode = Int32.Parse(this.Parameters[NumberOfParameters - 1]);
+			switch (statusCode)
 			{
 				case 0:
 					return "You are no longer logged in";

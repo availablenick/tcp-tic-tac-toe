@@ -3,17 +3,16 @@ using System.Net.Sockets;
 
 namespace TicTacToe.Client
 {
-	public class RegisterCommand : Command
+	public class ListCommand : Command
 	{
-		public const int NumberOfParameters = 2;
+		public const int NumberOfParameters = 0;
 		public const string WrongNumberOfParametersMessage =
-			"Wrong number of parameters for register command. Usage: " +
-			"register <username> <password>";
-		public RegisterCommand(params string[] parameters) : base(parameters) { }
+			"Wrong number of parameters for list command. Usage: list";
+		public ListCommand(params string[] parameters) : base(parameters) { }
 		public override int Execute(Socket serverSocket, Byte[] receiveBuffer,
 			Byte[] sendBuffer)
 		{
-			string requestMessage = $"register {this.Parameters[0]} {this.Parameters[1]}";
+			string requestMessage = "list";
 			BufferHelper.WriteMessageToBuffer(sendBuffer, requestMessage);
 			serverSocket.Send(sendBuffer, requestMessage.Length, 0);
 

@@ -24,7 +24,7 @@ namespace TicTacToe.Client
 			Response response = ResponseParser.Parse(responseMessage);
 			Console.WriteLine(response.ToString());
 
-			return response.StatusCode;
+			return Int32.Parse(response.Parameters[response.Parameters.Count - 1]);
 		}
 	}
 }

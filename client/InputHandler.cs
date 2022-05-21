@@ -13,8 +13,8 @@ namespace TicTacToe.Client
 		public InputHandler(Socket serverSocket)
 		{
 			this.ServerSocket = serverSocket;
-			this.ReceiveBuffer = new Byte[128];
-			this.SendBuffer = new Byte[128];
+			this.ReceiveBuffer = new Byte[1024];
+			this.SendBuffer = new Byte[1024];
 			this.UserState = new LoggedOut(this);
 		}
 

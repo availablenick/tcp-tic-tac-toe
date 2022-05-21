@@ -5,32 +5,6 @@ namespace TicTacToe.Server
 {
 	public class RequestParser
 	{
-		private static bool HasCorrectNumberOfParameters(
-			int numberOfParameters, GroupCollection groups)
-		{
-			for (int i = 1; i <= numberOfParameters; i++)
-			{
-				if (groups[2*i + 1].Value == "")
-				{
-					return false;
-				}
-			}
-
-			return true;
-		}
-
-		private static string[] CreateParameterArray(
-			int numberOfParameters, GroupCollection groups)
-		{
-			string[] parameters = new string[numberOfParameters];
-			for (int i = 0; i < numberOfParameters; i++)
-			{
-				parameters[i] = groups[2*(i+1) + 1].Value;
-			}
-
-			return parameters;
-		}
-
 		public static Request Parse(string message)
 		{
 			Regex regex = new Regex(@"([\x21-\x80]+)(\s+([\x21-\x80]+))?(\s+([\x21-\x80]+))?");
@@ -41,28 +15,46 @@ namespace TicTacToe.Server
 				string requestType = groups[1].Value.ToLower();
 				switch (requestType)
 				{
+					case "list":
+						if (MessageHelper.HasCorrectNumberOfParameters(
+								ListRequest.NumberOfParameters, groups))
+						{
+							return new ListRequest(MessageHelper.CreateParameterArray(
+								ListRequest.NumberOfParameters, groups));
+						}
+
+						throw new InvalidRequestException();
+
 					case "login":
-						if (HasCorrectNumberOfParameters(
+						if (MessageHelper.HasCorrectNumberOfParameters(
 								LoginRequest.NumberOfParameters, groups))
 						{
-							return new LoginRequest(CreateParameterArray(
+							return new LoginRequest(MessageHelper.CreateParameterArray(
 								LoginRequest.NumberOfParameters, groups));
 						}
 
 						throw new InvalidRequestException();
 
 					case "logout":
-						return new LogoutRequest();
+						if (MessageHelper.HasCorrectNumberOfParameters(
+								LogoutRequest.NumberOfParameters, groups))
+						{
+							return new LogoutRequest(MessageHelper.CreateParameterArray(
+								LogoutRequest.NumberOfParameters, groups));
+						}
+
+						throw new InvalidRequestException();
 
 					case "register":
-						if (HasCorrectNumberOfParameters(
+						if (MessageHelper.HasCorrectNumberOfParameters(
 								RegisterRequest.NumberOfParameters, groups))
 						{
-							return new RegisterRequest(CreateParameterArray(
+							return new RegisterRequest(MessageHelper.CreateParameterArray(
 								RegisterRequest.NumberOfParameters, groups));
 						}
 
 						throw new InvalidRequestException();
+
 					default:
 						throw new InvalidRequestException();
 				}

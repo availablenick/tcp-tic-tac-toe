@@ -5,32 +5,6 @@ namespace TicTacToe.Client
 {
 	public class CommandParser
 	{
-		private static bool HasCorrectNumberOfParameters(
-			int numberOfParameters, GroupCollection groups)
-		{
-			for (int i = 1; i <= numberOfParameters; i++)
-			{
-				if (groups[2*i + 1].Value == "")
-				{
-					return false;
-				}
-			}
-
-			return true;
-		}
-
-		private static string[] CreateParameterArray(
-			int numberOfParameters, GroupCollection groups)
-		{
-			string[] parameters = new string[numberOfParameters];
-			for (int i = 0; i < numberOfParameters; i++)
-			{
-				parameters[i] = groups[2*(i+1) + 1].Value;
-			}
-
-			return parameters;
-		}
-
 		public static Command Parse(string input)
 		{
 			Regex regex = new Regex(@"([\x21-\x80]+)(\s+([\x21-\x80]+))?(\s+([\x21-\x80]+))?");
@@ -41,11 +15,22 @@ namespace TicTacToe.Client
 				string command = groups[1].Value.ToLower();
 				switch (command)
 				{
+					case "list":
+						if (MessageHelper.HasCorrectNumberOfParameters(
+								ListCommand.NumberOfParameters, groups))
+						{
+							return new ListCommand(MessageHelper.CreateParameterArray(
+								ListCommand.NumberOfParameters, groups));
+						}
+
+						throw new InvalidCommandException(
+							ListCommand.WrongNumberOfParametersMessage);
+
 					case "login":
-						if (HasCorrectNumberOfParameters(
+						if (MessageHelper.HasCorrectNumberOfParameters(
 								LoginCommand.NumberOfParameters, groups))
 						{
-							return new LoginCommand(CreateParameterArray(
+							return new LoginCommand(MessageHelper.CreateParameterArray(
 								LoginCommand.NumberOfParameters, groups));
 						}
 
@@ -53,18 +38,27 @@ namespace TicTacToe.Client
 							LoginCommand.WrongNumberOfParametersMessage);
 
 					case "logout":
-						return new LogoutCommand();
+						if (MessageHelper.HasCorrectNumberOfParameters(
+								LogoutCommand.NumberOfParameters, groups))
+						{
+							return new LogoutCommand(MessageHelper.CreateParameterArray(
+								LogoutCommand.NumberOfParameters, groups));
+						}
+
+						throw new InvalidCommandException(
+							LogoutCommand.WrongNumberOfParametersMessage);
 
 					case "register":
-						if (HasCorrectNumberOfParameters(
+						if (MessageHelper.HasCorrectNumberOfParameters(
 								RegisterCommand.NumberOfParameters, groups))
 						{
-							return new RegisterCommand(CreateParameterArray(
+							return new RegisterCommand(MessageHelper.CreateParameterArray(
 								RegisterCommand.NumberOfParameters, groups));
 						}
 
 						throw new InvalidCommandException(
 							RegisterCommand.WrongNumberOfParametersMessage);
+
 					default:
 						throw new InvalidCommandException($"Command \"{command}\" not recognized");
 				}

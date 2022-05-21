@@ -13,7 +13,12 @@ namespace TicTacToe.Client
 
 		public void ExecuteCommand(Command command)
 		{
-			if (command is LoginCommand)
+			if (command is ListCommand)
+			{
+				command.Execute(this.Handler.ServerSocket, this.Handler.ReceiveBuffer,
+					this.Handler.SendBuffer);
+			}
+			else if (command is LoginCommand)
 			{
 				Console.WriteLine("You are already logged in");
 			}
