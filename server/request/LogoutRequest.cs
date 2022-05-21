@@ -15,7 +15,8 @@ namespace TicTacToe.Server
 			string remoteEndpoint = clientSocket.RemoteEndPoint.ToString();
 			int statusCode;
 			mutex.WaitOne();
-			if (Server.UsernameByEndpoint.ContainsKey(remoteEndpoint)) {
+			if (Server.UsernameByEndpoint.ContainsKey(remoteEndpoint))
+			{
 				statusCode = 0;
 				Server.RemoveOnlineUser(remoteEndpoint);
 			}
