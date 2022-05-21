@@ -39,6 +39,12 @@ namespace TicTacToe.Server
 				this._socket.Send(sendBuffer, responseMessage.Length, 0);
 			}
 
+			string remoteEndpoint = this._socket.RemoteEndPoint.ToString();
+			if (Server.UsernameByEndpoint.ContainsKey(remoteEndpoint))
+			{
+				Server.RemoveOnlineUser(remoteEndpoint);
+			}
+
 			Console.WriteLine($"[{Thread.CurrentThread.ManagedThreadId}] Connection closed");
 			this._socket.Close();
 		}
