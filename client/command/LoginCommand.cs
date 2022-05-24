@@ -13,7 +13,9 @@ namespace TicTacToe.Client
 		public override int Execute(Socket serverSocket, Byte[] receiveBuffer,
 			Byte[] sendBuffer)
 		{
-			string requestMessage = $"login {this.Parameters[0]} {this.Parameters[1]}";
+			string username = this.Parameters[0];
+			string password = this.Parameters[1];
+			string requestMessage = $"login {username};{password}";
 			BufferHelper.WriteMessageToBuffer(sendBuffer, requestMessage);
 			serverSocket.Send(sendBuffer, requestMessage.Length, 0);
 
@@ -24,7 +26,7 @@ namespace TicTacToe.Client
 			Response response = ResponseParser.Parse(responseMessage);
 			Console.WriteLine(response.ToString());
 
-			return Int32.Parse(response.Parameters[response.Parameters.Count - 1]);
+			return response.StatusCode;
 		}
 	}
 }

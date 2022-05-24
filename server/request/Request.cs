@@ -6,14 +6,14 @@ namespace TicTacToe.Server
 {
 	public abstract class Request
 	{
-		public List<string> Parameters;
+		public string Data { get; }
 
-		public Request(params string[] parameters)
+		public Request(params string[] messageParameters)
 		{
-			this.Parameters = new List<string>();
-			foreach (string parameter in parameters)
+			this.Data = null;
+			if (messageParameters.Length == 1)
 			{
-				this.Parameters.Add(parameter);
+				this.Data = messageParameters[0];
 			}
 		}
 

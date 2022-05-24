@@ -9,11 +9,10 @@ namespace TicTacToe.Client
 		public ListResponse(params string[] parameters) : base(parameters) { }
 		public override string ToString()
 		{
-			int statusCode = Int32.Parse(this.Parameters[NumberOfParameters - 1]);
-			switch (statusCode)
+			switch (this.StatusCode)
 			{
 				case 0:
-					string[] usernames = this.Parameters[0].Split(';', StringSplitOptions.RemoveEmptyEntries);
+					string[] usernames = this.Data.Split(';', StringSplitOptions.RemoveEmptyEntries);
 					StringBuilder message = new StringBuilder(1024);
 					foreach (string username in usernames)
 					{

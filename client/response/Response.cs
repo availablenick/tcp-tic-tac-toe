@@ -1,17 +1,25 @@
-using System.Collections.Generic;
+using System;
 
 namespace TicTacToe.Client
 {
 	public abstract class Response
 	{
-		public List<string> Parameters;
+		public string Data { get; }
+		public int StatusCode { get; }
 
-		public Response(params string[] parameters)
+		public Response(params string[] messageParameters)
 		{
-			this.Parameters = new List<string>();
-			foreach (string parameter in parameters)
+			this.Data = null;
+			this.StatusCode = 1;
+			if (messageParameters.Length == 1)
 			{
-				this.Parameters.Add(parameter);
+				this.Data = null;
+				this.StatusCode = Int32.Parse(messageParameters[0]);
+			}
+			else if (messageParameters.Length == 2)
+			{
+				this.Data = messageParameters[0];
+				this.StatusCode = Int32.Parse(messageParameters[1]);
 			}
 		}
 

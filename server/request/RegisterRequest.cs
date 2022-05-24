@@ -8,7 +8,7 @@ namespace TicTacToe.Server
 {
 	public class RegisterRequest : Request
 	{
-		public const int NumberOfParameters = 2;
+		public const int NumberOfParameters = 1;
 
 		public RegisterRequest(params string[] parameters) : base(parameters) { }
 
@@ -51,8 +51,16 @@ namespace TicTacToe.Server
 			Dictionary<string, string> usernameByEndpoint,
 			Dictionary<string, string> endpointByUsername)
 		{
+			string[] data = this.Data.Split(';', StringSplitOptions.RemoveEmptyEntries);
+			if (data.Length != 2)
+			{
+				return "register 2";
+			}
+
+			string username = data[0];
+			string password = data[1];
 			mutex.WaitOne();
-			int statusCode = AddUser(this.Parameters[0], this.Parameters[1]);
+			int statusCode = AddUser(username, password);
 			mutex.ReleaseMutex();
 
 			return $"register {statusCode}";

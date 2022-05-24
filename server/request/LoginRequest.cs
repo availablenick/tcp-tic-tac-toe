@@ -8,7 +8,7 @@ namespace TicTacToe.Server
 {
 	public class LoginRequest : Request
 	{
-		public const int NumberOfParameters = 2;
+		public const int NumberOfParameters = 1;
 
 		public LoginRequest(params string[] parameters) : base(parameters) { }
 
@@ -66,8 +66,14 @@ namespace TicTacToe.Server
 			Dictionary<string, string> usernameByEndpoint,
 			Dictionary<string, string> endpointByUsername)
 		{
-			string username = this.Parameters[0];
-			string password = this.Parameters[1];
+			string[] data = this.Data.Split(';', StringSplitOptions.RemoveEmptyEntries);
+			if (data.Length != 2)
+			{
+				return "login 3";
+			}
+
+			string username = data[0];
+			string password = data[1];
 			int statusCode;
 			mutex.WaitOne();
 			if (endpointByUsername.ContainsKey(username)) {

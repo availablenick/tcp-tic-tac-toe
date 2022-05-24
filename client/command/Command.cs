@@ -8,10 +8,10 @@ namespace TicTacToe.Client
 	{
 		public List<string> Parameters;
 
-		public Command(params string[] parameters)
+		public Command(params string[] messageParameters)
 		{
 			this.Parameters = new List<string>();
-			foreach (string parameter in parameters)
+			foreach (string parameter in messageParameters)
 			{
 				this.Parameters.Add(parameter);
 			}

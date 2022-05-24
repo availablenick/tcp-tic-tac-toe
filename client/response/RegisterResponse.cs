@@ -8,13 +8,14 @@ namespace TicTacToe.Client
 		public RegisterResponse(params string[] parameters) : base(parameters) { }
 		public override string ToString()
 		{
-			int statusCode = Int32.Parse(this.Parameters[NumberOfParameters - 1]);
-			switch (statusCode)
+			switch (this.StatusCode)
 			{
 				case 0:
 					return "Registered successfully";
 				case 1:
 					return "Username already exists";
+				case 2:
+					return "Invalid register request format";
 			}
 
 			return "Application error";

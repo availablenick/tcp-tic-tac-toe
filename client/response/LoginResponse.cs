@@ -8,8 +8,7 @@ namespace TicTacToe.Client
 		public LoginResponse(params string[] parameters) : base(parameters) { }
 		public override string ToString()
 		{
-			int statusCode = Int32.Parse(this.Parameters[NumberOfParameters - 1]);
-			switch (statusCode)
+			switch (this.StatusCode)
 			{
 				case 0:
 					return "Logged in successfully";
@@ -17,6 +16,8 @@ namespace TicTacToe.Client
 					return "Incorrect username or password";
 				case 2:
 					return "This user is already logged in";
+				case 3:
+					return "Invalid login request format";
 			}
 
 			return "Application error";
