@@ -23,8 +23,7 @@ namespace TicTacToe.Server
 								ListRequest.NumberOfParameters, groups));
 						}
 
-						throw new InvalidRequestException();
-
+						break;
 					case "login":
 						if (MessageHelper.HasCorrectNumberOfParameters(
 								LoginRequest.NumberOfParameters, groups))
@@ -33,8 +32,7 @@ namespace TicTacToe.Server
 								LoginRequest.NumberOfParameters, groups));
 						}
 
-						throw new InvalidRequestException();
-
+						break;
 					case "logout":
 						if (MessageHelper.HasCorrectNumberOfParameters(
 								LogoutRequest.NumberOfParameters, groups))
@@ -43,8 +41,7 @@ namespace TicTacToe.Server
 								LogoutRequest.NumberOfParameters, groups));
 						}
 
-						throw new InvalidRequestException();
-
+						break;
 					case "register":
 						if (MessageHelper.HasCorrectNumberOfParameters(
 								RegisterRequest.NumberOfParameters, groups))
@@ -53,14 +50,11 @@ namespace TicTacToe.Server
 								RegisterRequest.NumberOfParameters, groups));
 						}
 
-						throw new InvalidRequestException();
-
-					default:
-						throw new InvalidRequestException();
+						break;
 				}
 			}
 
-			return null;
+			return new InvalidRequest();
 		}
 	}
 }
