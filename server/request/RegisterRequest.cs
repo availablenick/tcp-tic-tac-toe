@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
 using System.Threading;
@@ -46,7 +47,9 @@ namespace TicTacToe.Server
 			}
 		}
 
-		public override string Fulfill(Socket clientSocket, Mutex mutex)
+		public override string Fulfill(Socket clientSocket, Mutex mutex,
+			Dictionary<string, string> usernameByEndpoint,
+			Dictionary<string, string> endpointByUsername)
 		{
 			mutex.WaitOne();
 			int statusCode = AddUser(this.Parameters[0], this.Parameters[1]);

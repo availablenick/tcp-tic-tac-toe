@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
 using System.Threading;
@@ -61,13 +62,15 @@ namespace TicTacToe.Server
 			}
 		}
 
-		public override string Fulfill(Socket clientSocket, Mutex mutex)
+		public override string Fulfill(Socket clientSocket, Mutex mutex,
+			Dictionary<string, string> usernameByEndpoint,
+			Dictionary<string, string> endpointByUsername)
 		{
 			string username = this.Parameters[0];
 			string password = this.Parameters[1];
 			int statusCode;
 			mutex.WaitOne();
-			if (Server.EndpointByUsername.ContainsKey(username)) {
+			if (endpointByUsername.ContainsKey(username)) {
 				statusCode = 2;
 			}
 			else
@@ -76,7 +79,8 @@ namespace TicTacToe.Server
 				if (statusCode == 0)
 				{
 					string remoteEndpoint = clientSocket.RemoteEndPoint.ToString();
-					Server.AddOnlineUser(username, remoteEndpoint);
+					UserHelper.AddOnlineUser(username, remoteEndpoint,
+						usernameByEndpoint, endpointByUsername);
 				}
 			}
 

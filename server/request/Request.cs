@@ -17,6 +17,8 @@ namespace TicTacToe.Server
 			}
 		}
 
-		public abstract string Fulfill(Socket clientSocket, Mutex mutex);
+		public abstract string Fulfill(Socket clientSocket, Mutex mutex,
+			Dictionary<string, string> usernameByEndpoint,
+			Dictionary<string, string> endpointByUsername);
 	}
 }

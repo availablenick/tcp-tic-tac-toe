@@ -7,22 +7,6 @@ namespace TicTacToe.Server
 {
 	public class Server
 	{
-		public static readonly Dictionary<string, string> UsernameByEndpoint = new Dictionary<string, string>();
-		public static readonly Dictionary<string, string> EndpointByUsername = new Dictionary<string, string>();
-
-		public static void AddOnlineUser(string username, string remoteEndpoint)
-		{
-			UsernameByEndpoint.Add(remoteEndpoint, username);
-			EndpointByUsername.Add(username, remoteEndpoint);
-		}
-
-		public static void RemoveOnlineUser(string remoteEndpoint)
-		{
-			string username = UsernameByEndpoint[remoteEndpoint];
-			UsernameByEndpoint.Remove(remoteEndpoint);
-			EndpointByUsername.Remove(username);
-		}
-
 		public static void Main(string[] args)
 		{
 			int port = 3000;
@@ -56,6 +40,8 @@ namespace TicTacToe.Server
 			Console.WriteLine("Done");
 
 			Mutex mutex = new Mutex();
+			Dictionary<string, string> usernameByEndpoint = new Dictionary<string, string>();
+			Dictionary<string, string> endpointByUsername = new Dictionary<string, string>();
 			while (true)
 			{
 				Console.WriteLine("Waiting for incoming connections...");
@@ -63,7 +49,7 @@ namespace TicTacToe.Server
 				Console.WriteLine("Connection accepted...");
 
 				ThreadDataWrapper wrapper = new ThreadDataWrapper(connectionSocket,
-					mutex);
+					mutex, usernameByEndpoint, endpointByUsername);
 				Thread thread = new Thread(new ThreadStart(wrapper.HandleConnection));
 				thread.Start();
 
