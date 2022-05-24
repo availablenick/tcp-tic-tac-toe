@@ -4,7 +4,7 @@ using System.IO;
 using System.Net.Sockets;
 using System.Threading;
 
-namespace TicTacToe.Server
+namespace TicTacToe.ServerSide
 {
 	public class RegisterRequest : Request
 	{

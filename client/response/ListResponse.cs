@@ -1,7 +1,7 @@
 using System;
 using System.Text;
 
-namespace TicTacToe.Client
+namespace TicTacToe.ClientSide
 {
 	public class ListResponse : Response
 	{

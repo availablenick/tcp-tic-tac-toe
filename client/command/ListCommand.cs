@@ -1,7 +1,7 @@
 using System;
 using System.Net.Sockets;
 
-namespace TicTacToe.Client
+namespace TicTacToe.ClientSide
 {
 	public class ListCommand : Command
 	{

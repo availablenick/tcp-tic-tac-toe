@@ -1,6 +1,6 @@
 using System;
 
-namespace TicTacToe.Client
+namespace TicTacToe.ClientSide
 {
 	public abstract class Response
 	{

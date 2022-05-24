@@ -3,7 +3,7 @@ using System.Net.Sockets;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace TicTacToe.Server
+namespace TicTacToe.ServerSide
 {
 	public class ThreadDataWrapper
 	{
@@ -38,7 +38,6 @@ namespace TicTacToe.Server
 					break;
 				}
 
-				Console.Write($"[{Thread.CurrentThread.ManagedThreadId}] ");
 				string bufferMessage = BufferHelper.GetBufferMessage(receiveBuffer, numberOfReceivedBytes);
 				Request request = RequestParser.Parse(bufferMessage);
 				string responseMessage = request.Fulfill(this._socket, this._mutex,

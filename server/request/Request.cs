@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Threading;
 
-namespace TicTacToe.Server
+namespace TicTacToe.ServerSide
 {
 	public abstract class Request
 	{

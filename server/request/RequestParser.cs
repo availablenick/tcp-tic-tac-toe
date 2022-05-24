@@ -1,7 +1,7 @@
 using System;
 using System.Text.RegularExpressions;
 
-namespace TicTacToe.Server
+namespace TicTacToe.ServerSide
 {
 	public class RequestParser
 	{

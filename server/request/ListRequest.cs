@@ -4,7 +4,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 
-namespace TicTacToe.Server
+namespace TicTacToe.ServerSide
 {
 	public class ListRequest : Request
 	{

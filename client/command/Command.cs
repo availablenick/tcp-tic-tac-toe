@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
 
-namespace TicTacToe.Client
+namespace TicTacToe.ClientSide
 {
 	public abstract class Command
 	{

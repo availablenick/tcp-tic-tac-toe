@@ -3,31 +3,22 @@ using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Threading;
 
-namespace TicTacToe.Server
+namespace TicTacToe.ServerSide
 {
 	public class Server
 	{
-		public static void Main(string[] args)
-		{
-			int port = 3000;
-			if (args.Length > 0)
-			{
-				try
-				{
-					port = Int32.Parse(args[0]);
-				}
-				catch (FormatException)
-				{
-					Console.WriteLine("Specified port has invalid format");
-				}
-			}
+		private Socket _listeningSocket;
 
+		public Server() : this(3000) {}
+
+		public Server(int port)
+		{
 			Console.WriteLine($"Initializing server on port {port}...");
 
-			Socket listeningSocket = SocketHelper.CreateListeningSocket(port);
-			if (listeningSocket == null)
+			this._listeningSocket = SocketHelper.CreateListeningSocket(port);
+			if (this._listeningSocket == null)
 			{
-				Console.WriteLine("Could not create socket");
+				Console.WriteLine("Could not create listening socket");
 				return;
 			}
 
@@ -38,22 +29,23 @@ namespace TicTacToe.Server
 			}
 
 			Console.WriteLine("Done");
+		}
 
+		public void WaitConnection()
+		{
 			Mutex mutex = new Mutex();
 			Dictionary<string, string> usernameByEndpoint = new Dictionary<string, string>();
 			Dictionary<string, string> endpointByUsername = new Dictionary<string, string>();
 			while (true)
 			{
 				Console.WriteLine("Waiting for incoming connections...");
-				Socket connectionSocket = listeningSocket.Accept();
+				Socket connectionSocket = this._listeningSocket.Accept();
 				Console.WriteLine("Connection accepted...");
 
 				ThreadDataWrapper wrapper = new ThreadDataWrapper(connectionSocket,
 					mutex, usernameByEndpoint, endpointByUsername);
 				Thread thread = new Thread(new ThreadStart(wrapper.HandleConnection));
 				thread.Start();
-
-				Console.WriteLine($"Main thread: {Thread.CurrentThread.ManagedThreadId}");
 			}
 		}
 	}

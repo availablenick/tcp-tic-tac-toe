@@ -1,37 +1,22 @@
 using System;
 using System.Net.Sockets;
 
-namespace TicTacToe.Client
+namespace TicTacToe.ClientSide
 {
 	public class Client
 	{
-		public static void Main(string[] args)
+		public Socket ServerSocket { get; }
+		public IUserState UserState { get; set; }
+		public Byte[] ReceiveBuffer;
+		public Byte[] SendBuffer;
+
+		public Client(string serverAddress, int serverPort)
 		{
-			string serverAddress = "";
-			int port = 0;
-			if (args.Length < 2)
-			{
-				Console.WriteLine("You need to specify the server's address and port to connect to");
-				return;
-			}
-			else
-			{
-				serverAddress = args[0];
-				try
-				{
-					port = Int32.Parse(args[1]);
-				}
-				catch (FormatException)
-				{
-					Console.WriteLine("Specified port has invalid format");
-					return;
-				}
-			}
+			Console.WriteLine($"Trying to connect to {serverAddress} on port {serverPort}...");
 
-			Console.WriteLine($"Trying to connect to {serverAddress} on port {port}...");
-
-			Socket socket = SocketHelper.CreateConnectionSocket(serverAddress, port);
-			if (socket == null)
+			this.ServerSocket = SocketHelper.CreateConnectionSocket(serverAddress,
+				serverPort);
+			if (this.ServerSocket == null)
 			{
 				Console.WriteLine("Could not connect to specified host");
 				return;
@@ -39,11 +24,39 @@ namespace TicTacToe.Client
 
 			Console.WriteLine("Connection established");
 
-			InputHandler handler = new InputHandler(socket);
-			handler.HandleInput();
+			this.UserState = new LoggedOut(this);
+			this.ReceiveBuffer = new Byte[1024];
+			this.SendBuffer = new Byte[1024];
+		}
+
+		public void HandleInput()
+		{
+			string line;
+			while (true)
+			{
+				Console.Write("> ");
+				line = Console.ReadLine();
+				if (line == null)
+				{
+					break;
+				}
+
+				try
+				{
+					Command command = CommandParser.Parse(line);
+					if (command != null)
+					{
+						this.UserState.ExecuteCommand(command);
+					}
+				}
+				catch (InvalidCommandException exception)
+				{
+					Console.WriteLine(exception.Message);
+				}
+			}
 
 			Console.WriteLine("End");
-			socket.Close();
+			this.ServerSocket.Close();
 		}
 	}
 }

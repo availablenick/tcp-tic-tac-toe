@@ -1,6 +1,6 @@
 using System;
 
-namespace TicTacToe.Client
+namespace TicTacToe.ClientSide
 {
 	public class LoginResponse : Response
 	{
