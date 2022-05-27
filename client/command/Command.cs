@@ -6,7 +6,7 @@ namespace TicTacToe.ClientSide
 {
 	public abstract class Command
 	{
-		public List<string> Parameters;
+		protected List<string> Parameters;
 
 		public Command(string[] messageParameters)
 		{

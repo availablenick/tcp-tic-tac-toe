@@ -4,7 +4,7 @@ namespace TicTacToe.ClientSide
 {
 	public abstract class Response
 	{
-		public string Data { get; }
+		public string Data;
 		public int StatusCode { get; }
 
 		public Response(params string[] messageParameters)

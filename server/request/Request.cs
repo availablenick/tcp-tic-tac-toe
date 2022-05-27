@@ -6,7 +6,7 @@ namespace TicTacToe.ServerSide
 {
 	public abstract class Request
 	{
-		public string Data { get; }
+		protected string Data;
 
 		public Request(string[] messageParameters)
 		{
