@@ -10,7 +10,12 @@ namespace TicTacToe.ServerSide
 	{
 		public const int NumberOfParameters = 1;
 
-		public RegisterRequest(params string[] parameters) : base(parameters) { }
+		private Mutex _mutex;
+
+		public RegisterRequest(string[] parameters, Mutex mutex) : base(parameters)
+		{
+			this._mutex = mutex;
+		}
 
 		private int AddUser(string username, string password)
 		{
@@ -47,9 +52,7 @@ namespace TicTacToe.ServerSide
 			}
 		}
 
-		public override string Fulfill(Socket clientSocket, Mutex mutex,
-			Dictionary<string, string> usernameByEndpoint,
-			Dictionary<string, string> endpointByUsername)
+		public override string Fulfill()
 		{
 			string[] data = this.Data.Split(';', StringSplitOptions.RemoveEmptyEntries);
 			if (data.Length != 2)
@@ -59,9 +62,9 @@ namespace TicTacToe.ServerSide
 
 			string username = data[0];
 			string password = data[1];
-			mutex.WaitOne();
+			this._mutex.WaitOne();
 			int statusCode = AddUser(username, password);
-			mutex.ReleaseMutex();
+			this._mutex.ReleaseMutex();
 
 			return $"register {statusCode}";
 		}

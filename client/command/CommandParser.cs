@@ -5,7 +5,14 @@ namespace TicTacToe.ClientSide
 {
 	public class CommandParser
 	{
-		public static Command Parse(string input)
+		private Client _client;
+
+		public CommandParser(Client client)
+		{
+			this._client = client;
+		}
+
+		public Command Parse(string input)
 		{
 			Regex regex = new Regex(@"([\x21-\x80]+)(\s+([\x21-\x80]+))?(\s+([\x21-\x80]+))?");
 			MatchCollection matches = regex.Matches(input);
@@ -20,7 +27,9 @@ namespace TicTacToe.ClientSide
 								ListCommand.NumberOfParameters, groups))
 						{
 							return new ListCommand(MessageHelper.CreateParameterArray(
-								ListCommand.NumberOfParameters, groups));
+								ListCommand.NumberOfParameters, groups),
+								this._client.ServerSocket, this._client.ReceiveBuffer,
+								this._client.SendBuffer);
 						}
 
 						throw new InvalidCommandException(
@@ -31,7 +40,9 @@ namespace TicTacToe.ClientSide
 								LoginCommand.NumberOfParameters, groups))
 						{
 							return new LoginCommand(MessageHelper.CreateParameterArray(
-								LoginCommand.NumberOfParameters, groups));
+								LoginCommand.NumberOfParameters, groups),
+								this._client.ServerSocket, this._client.ReceiveBuffer,
+								this._client.SendBuffer);
 						}
 
 						throw new InvalidCommandException(
@@ -42,7 +53,9 @@ namespace TicTacToe.ClientSide
 								LogoutCommand.NumberOfParameters, groups))
 						{
 							return new LogoutCommand(MessageHelper.CreateParameterArray(
-								LogoutCommand.NumberOfParameters, groups));
+								LogoutCommand.NumberOfParameters, groups),
+								this._client.ServerSocket, this._client.ReceiveBuffer,
+								this._client.SendBuffer);
 						}
 
 						throw new InvalidCommandException(
@@ -53,7 +66,9 @@ namespace TicTacToe.ClientSide
 								RegisterCommand.NumberOfParameters, groups))
 						{
 							return new RegisterCommand(MessageHelper.CreateParameterArray(
-								RegisterCommand.NumberOfParameters, groups));
+								RegisterCommand.NumberOfParameters, groups),
+								this._client.ServerSocket, this._client.ReceiveBuffer,
+								this._client.SendBuffer);
 						}
 
 						throw new InvalidCommandException(

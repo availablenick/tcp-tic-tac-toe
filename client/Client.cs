@@ -31,6 +31,7 @@ namespace TicTacToe.ClientSide
 
 		public void HandleInput()
 		{
+			CommandParser parser = new CommandParser(this);
 			string line;
 			while (true)
 			{
@@ -43,7 +44,7 @@ namespace TicTacToe.ClientSide
 
 				try
 				{
-					Command command = CommandParser.Parse(line);
+					Command command = parser.Parse(line);
 					if (command != null)
 					{
 						this.UserState.ExecuteCommand(command);

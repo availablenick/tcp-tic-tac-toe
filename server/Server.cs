@@ -36,6 +36,7 @@ namespace TicTacToe.ServerSide
 			Mutex mutex = new Mutex();
 			Dictionary<string, string> usernameByEndpoint = new Dictionary<string, string>();
 			Dictionary<string, string> endpointByUsername = new Dictionary<string, string>();
+			
 			while (true)
 			{
 				Console.WriteLine("Waiting for incoming connections...");

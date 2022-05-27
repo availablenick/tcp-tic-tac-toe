@@ -4,19 +4,18 @@ namespace TicTacToe.ClientSide
 {
 	public class LoggedIn : IUserState
 	{
-		public Client ClientObject { get; set; }
+		public Client _client { get; set; }
 
-		public LoggedIn(Client clientObject)
+		public LoggedIn(Client client)
 		{
-			this.ClientObject = clientObject;
+			this._client = client;
 		}
 
 		public void ExecuteCommand(Command command)
 		{
 			if (command is ListCommand)
 			{
-				command.Execute(this.ClientObject.ServerSocket,
-					this.ClientObject.ReceiveBuffer, this.ClientObject.SendBuffer);
+				command.Execute();
 			}
 			else if (command is LoginCommand)
 			{
@@ -24,11 +23,10 @@ namespace TicTacToe.ClientSide
 			}
 			else if (command is LogoutCommand)
 			{
-				int statusCode = command.Execute(this.ClientObject.ServerSocket,
-					this.ClientObject.ReceiveBuffer, this.ClientObject.SendBuffer);
+				int statusCode = command.Execute();
 				if (statusCode == 0)
 				{
-					this.ClientObject.UserState = new LoggedOut(this.ClientObject);
+					this._client.UserState = new LoggedOut(this._client);
 				}
 			}
 			else if (command is RegisterCommand)

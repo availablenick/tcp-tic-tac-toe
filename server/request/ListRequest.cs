@@ -10,21 +10,29 @@ namespace TicTacToe.ServerSide
 	{
 		public const int NumberOfParameters = 0;
 
-		public ListRequest(params string[] parameters) : base(parameters) { }
+		private Socket _clientSocket;
+		private Mutex _mutex;
+		private Dictionary<string, string> _endpointByUsername;
 
-		public override string Fulfill(Socket clientSocket, Mutex mutex,
-			Dictionary<string, string> usernameByEndpoint,
-			Dictionary<string, string> endpointByUsername)
+		public ListRequest(string[] parameters, Socket clientSocket,
+			Mutex mutex, Dictionary<string, string> endpointByUsername) : base(parameters)
+		{
+			this._clientSocket = clientSocket;
+			this._mutex = mutex;
+			this._endpointByUsername = endpointByUsername;
+		}
+
+		public override string Fulfill()
 		{
 			int statusCode = 0;
-			mutex.WaitOne();
+			this._mutex.WaitOne();
 			StringBuilder usernames = new StringBuilder(1024);
-			foreach (string username in endpointByUsername.Keys)
+			foreach (string username in this._endpointByUsername.Keys)
 			{
 				usernames.Append($"{username};");
 			}
 
-			mutex.ReleaseMutex();
+			this._mutex.ReleaseMutex();
 
 			return $"list {usernames.ToString()} {statusCode}";
 		}

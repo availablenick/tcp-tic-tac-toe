@@ -10,7 +10,20 @@ namespace TicTacToe.ServerSide
 	{
 		public const int NumberOfParameters = 1;
 
-		public LoginRequest(params string[] parameters) : base(parameters) { }
+		private Socket _clientSocket;
+		private Mutex _mutex;
+		private Dictionary<string, string> _usernameByEndpoint;
+		private Dictionary<string, string> _endpointByUsername;
+
+		public LoginRequest(string[] parameters, Socket clientSocket,
+			Mutex mutex, Dictionary<string, string> usernameByEndpoint,
+			Dictionary<string, string> endpointByUsername) : base(parameters)
+		{
+			this._clientSocket = clientSocket;
+			this._mutex = mutex;
+			this._usernameByEndpoint = usernameByEndpoint;
+			this._endpointByUsername = endpointByUsername;
+		}
 
 		private int AuthenticateUser(string username, string password)
 		{
@@ -62,9 +75,7 @@ namespace TicTacToe.ServerSide
 			}
 		}
 
-		public override string Fulfill(Socket clientSocket, Mutex mutex,
-			Dictionary<string, string> usernameByEndpoint,
-			Dictionary<string, string> endpointByUsername)
+		public override string Fulfill()
 		{
 			string[] data = this.Data.Split(';', StringSplitOptions.RemoveEmptyEntries);
 			if (data.Length != 2)
@@ -75,8 +86,8 @@ namespace TicTacToe.ServerSide
 			string username = data[0];
 			string password = data[1];
 			int statusCode;
-			mutex.WaitOne();
-			if (endpointByUsername.ContainsKey(username)) {
+			this._mutex.WaitOne();
+			if (this._endpointByUsername.ContainsKey(username)) {
 				statusCode = 2;
 			}
 			else
@@ -84,13 +95,13 @@ namespace TicTacToe.ServerSide
 				statusCode = AuthenticateUser(username, password);
 				if (statusCode == 0)
 				{
-					string remoteEndpoint = clientSocket.RemoteEndPoint.ToString();
+					string remoteEndpoint = this._clientSocket.RemoteEndPoint.ToString();
 					UserHelper.AddOnlineUser(username, remoteEndpoint,
-						usernameByEndpoint, endpointByUsername);
+						this._usernameByEndpoint, this._endpointByUsername);
 				}
 			}
 
-			mutex.ReleaseMutex();
+			this._mutex.ReleaseMutex();
 
 			return $"login {statusCode}";
 		}

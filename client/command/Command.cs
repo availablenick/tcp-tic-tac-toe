@@ -8,7 +8,7 @@ namespace TicTacToe.ClientSide
 	{
 		public List<string> Parameters;
 
-		public Command(params string[] messageParameters)
+		public Command(string[] messageParameters)
 		{
 			this.Parameters = new List<string>();
 			foreach (string parameter in messageParameters)
@@ -17,7 +17,6 @@ namespace TicTacToe.ClientSide
 			}
 		}
 
-		public abstract int Execute(Socket serverSocket, Byte[] receiveBuffer,
-			Byte[] sendBuffer);
+		public abstract int Execute();
 	}
 }

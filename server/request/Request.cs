@@ -8,7 +8,7 @@ namespace TicTacToe.ServerSide
 	{
 		public string Data { get; }
 
-		public Request(params string[] messageParameters)
+		public Request(string[] messageParameters)
 		{
 			this.Data = null;
 			if (messageParameters.Length == 1)
@@ -17,8 +17,6 @@ namespace TicTacToe.ServerSide
 			}
 		}
 
-		public abstract string Fulfill(Socket clientSocket, Mutex mutex,
-			Dictionary<string, string> usernameByEndpoint,
-			Dictionary<string, string> endpointByUsername);
+		public abstract string Fulfill();
 	}
 }

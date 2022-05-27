@@ -1,6 +1,6 @@
 using System;
-using System.Net.Sockets;
 using System.Collections.Generic;
+using System.Net.Sockets;
 using System.Threading;
 
 namespace TicTacToe.ServerSide
@@ -26,6 +26,8 @@ namespace TicTacToe.ServerSide
 		{
 			Console.WriteLine($"[{Thread.CurrentThread.ManagedThreadId}] New client connected");
 
+			RequestParser parser = new RequestParser(this._socket, this._mutex,
+				this._usernameByEndpoint, this._endpointByUsername);
 			Byte[] receiveBuffer = new Byte[1024];
 			Byte[] sendBuffer = new Byte[1024];
 			int numberOfReceivedBytes;
@@ -39,9 +41,8 @@ namespace TicTacToe.ServerSide
 				}
 
 				string bufferMessage = BufferHelper.GetBufferMessage(receiveBuffer, numberOfReceivedBytes);
-				Request request = RequestParser.Parse(bufferMessage);
-				string responseMessage = request.Fulfill(this._socket, this._mutex,
-					this._usernameByEndpoint, this._endpointByUsername);
+				Request request = parser.Parse(bufferMessage);
+				string responseMessage = request.Fulfill();
 				BufferHelper.WriteMessageToBuffer(sendBuffer, responseMessage);
 				this._socket.Send(sendBuffer, responseMessage.Length, 0);
 			}

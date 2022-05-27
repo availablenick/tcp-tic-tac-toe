@@ -11,9 +11,7 @@ namespace TicTacToe.ServerSide
 
 		public InvalidRequest(params string[] parameters) : base(parameters) { }
 
-		public override string Fulfill(Socket clientSocket, Mutex mutex,
-			Dictionary<string, string> usernameByEndpoint,
-			Dictionary<string, string> endpointByUsername)
+		public override string Fulfill()
 		{
 			return "invalid 1";
 		}
