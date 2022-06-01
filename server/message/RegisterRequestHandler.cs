@@ -1,20 +1,36 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
 using System.Threading;
 
 namespace TicTacToe.ServerSide
 {
-	public class RegisterRequest : Request
+	public class RegisterRequestHandler : IMessageHandler
 	{
-		public const int NumberOfParameters = 1;
-
+		private string _data;
 		private Mutex _mutex;
 
-		public RegisterRequest(string[] parameters, Mutex mutex) : base(parameters)
+		public RegisterRequestHandler(string data, Mutex mutex)
 		{
+			this._data = data;
 			this._mutex = mutex;
+		}
+
+		public string HandleMessage()
+		{
+			string[] data = this._data.Split(';');
+			if (data.Length != 2)
+			{
+				return "resregister 2";
+			}
+
+			string username = data[0];
+			string password = data[1];
+			this._mutex.WaitOne();
+			int statusCode = AddUser(username, password);
+			this._mutex.ReleaseMutex();
+
+			return $"resregister {statusCode}";
 		}
 
 		private int AddUser(string username, string password)
@@ -50,23 +66,6 @@ namespace TicTacToe.ServerSide
 				stream.Write(buffer, 0, newLine.Length);
 				return 0;
 			}
-		}
-
-		public override string Fulfill()
-		{
-			string[] data = this.Data.Split(';', StringSplitOptions.RemoveEmptyEntries);
-			if (data.Length != 2)
-			{
-				return "register 2";
-			}
-
-			string username = data[0];
-			string password = data[1];
-			this._mutex.WaitOne();
-			int statusCode = AddUser(username, password);
-			this._mutex.ReleaseMutex();
-
-			return $"register {statusCode}";
 		}
 	}
 }

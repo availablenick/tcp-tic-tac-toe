@@ -7,55 +7,44 @@ namespace TicTacToe.ServerSide
 {
 	public class ThreadDataWrapper
 	{
-		private Socket _socket;
-		private Mutex _mutex;
-		private Dictionary<string, string> _usernameByEndpoint;
-		private Dictionary<string, string> _endpointByUsername;
+		private Server _server;
+		private Socket _clientSocket;
+		public bool ShouldReadData { get; set; }
 
-		public ThreadDataWrapper(Socket socket, Mutex mutex,
-			Dictionary<string, string> usernameByEndpoint,
-			Dictionary<string, string> endpointByUsername)
+		public ThreadDataWrapper(Server server, Socket clientSocket)
 		{
-			this._socket = socket;
-			this._mutex = mutex;
-			this._usernameByEndpoint = usernameByEndpoint;
-			this._endpointByUsername = endpointByUsername;
+			this._server = server;
+			this._clientSocket = clientSocket;
+			this.ShouldReadData = true;
 		}
 
 		public void HandleConnection()
 		{
 			Console.WriteLine($"[{Thread.CurrentThread.ManagedThreadId}] New client connected");
 
-			RequestParser parser = new RequestParser(this._socket, this._mutex,
-				this._usernameByEndpoint, this._endpointByUsername);
 			Byte[] receiveBuffer = new Byte[1024];
 			Byte[] sendBuffer = new Byte[1024];
-			int numberOfReceivedBytes;
+			MessageHandlerCreator handlerCreator = new MessageHandlerCreator(
+				this._server, this._clientSocket, receiveBuffer, sendBuffer);
 			while (true)
 			{
-				numberOfReceivedBytes = this._socket.Receive(receiveBuffer,
-					receiveBuffer.Length, 0);
-				if (numberOfReceivedBytes <= 0)
+				if (this.ShouldReadData && this._clientSocket.Available > 0)
 				{
-					break;
+					string requestMessage = SocketHelper.ReceiveMessage(this._clientSocket, receiveBuffer);
+					IMessageHandler handler = handlerCreator.CreateHandlerFor(requestMessage);
+					string responseMessage = handler.HandleMessage();
+					SocketHelper.SendMessage(this._clientSocket, sendBuffer, responseMessage);
 				}
-
-				string bufferMessage = BufferHelper.GetBufferMessage(receiveBuffer, numberOfReceivedBytes);
-				Request request = parser.Parse(bufferMessage);
-				string responseMessage = request.Fulfill();
-				BufferHelper.WriteMessageToBuffer(sendBuffer, responseMessage);
-				this._socket.Send(sendBuffer, responseMessage.Length, 0);
 			}
 
-			string remoteEndpoint = this._socket.RemoteEndPoint.ToString();
-			if (this._usernameByEndpoint.ContainsKey(remoteEndpoint))
+			string remoteEndpoint = this._clientSocket.RemoteEndPoint.ToString();
+			if (this._server.UsernameByEndpoint.ContainsKey(remoteEndpoint))
 			{
-				UserHelper.RemoveOnlineUser(remoteEndpoint, this._usernameByEndpoint,
-					this._endpointByUsername);
+				this._server.RemoveOnlineUser(remoteEndpoint);
 			}
 
 			Console.WriteLine($"[{Thread.CurrentThread.ManagedThreadId}] Connection closed");
-			this._socket.Close();
+			this._clientSocket.Close();
 		}
 	}
 }

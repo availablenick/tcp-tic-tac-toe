@@ -13,7 +13,15 @@ namespace TicTacToe.ClientSide
 
 		public void ExecuteCommand(Command command)
 		{
-			if (command is ListCommand)
+			if (command is InviteCommand)
+			{
+				int statusCode = command.Execute();
+				if (statusCode == 0)
+				{
+					this._client.UserState = new Playing(this._client);
+				}
+			}
+			else if (command is ListCommand)
 			{
 				command.Execute();
 			}

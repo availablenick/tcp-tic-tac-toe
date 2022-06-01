@@ -9,33 +9,25 @@ namespace TicTacToe.ClientSide
 		public const string WrongNumberOfParametersMessage =
 			"Wrong number of parameters for logout command. Usage: logout";
 
-		private Socket _serverSocket;
-		private Byte[] _receiveBuffer;
-		private Byte[] _sendBuffer;
+		private Client _client;
 
-		public LogoutCommand(string[] parameters, Socket serverSocket,
-			Byte[] receiveBuffer, Byte[] sendBuffer) : base(parameters)
+		public LogoutCommand(string[] parameters, Client client) : base(parameters)
 		{
-			this._serverSocket = serverSocket;
-			this._receiveBuffer = receiveBuffer;
-			this._sendBuffer = sendBuffer;
+			this._client = client;
 		}
 
 		public override int Execute()
 		{
-			string requestMessage = "logout";
-			BufferHelper.WriteMessageToBuffer(this._sendBuffer, requestMessage);
-			this._serverSocket.Send(this._sendBuffer, requestMessage.Length, 0);
+			string requestMessage = "reqlogout";
+			SocketHelper.SendMessage(this._client.ServerSocket,
+				this._client.SendBuffer, requestMessage);
+			string responseMessage = SocketHelper.ReceiveMessage(
+				this._client.ServerSocket, this._client.ReceiveBuffer);
+			IMessageHandler handler = this._client.HandlerCreator.CreateHandlerFor(
+				responseMessage);
+			int statusCode = handler.HandleMessage();
 
-			int numberOfReceivedBytes = this._serverSocket.Receive(this._receiveBuffer,
-				this._receiveBuffer.Length, 0);
-			string responseMessage = BufferHelper.GetBufferMessage(this._receiveBuffer,
-				numberOfReceivedBytes);
-
-			Response response = ResponseParser.Parse(responseMessage);
-			Console.WriteLine(response.ToString());
-
-			return response.StatusCode;
+			return statusCode;
 		}
 	}
 }

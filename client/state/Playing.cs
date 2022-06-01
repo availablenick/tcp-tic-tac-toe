@@ -2,11 +2,11 @@ using System;
 
 namespace TicTacToe.ClientSide
 {
-	public class LoggedOut : IUserState
+	public class Playing : IUserState
 	{
 		public Client _client { get; set; }
 
-		public LoggedOut(Client client)
+		public Playing(Client client)
 		{
 			this._client = client;
 		}
@@ -15,27 +15,23 @@ namespace TicTacToe.ClientSide
 		{
 			if (command is InviteCommand)
 			{
-				Console.WriteLine("You must log in first");
+				Console.WriteLine("You cannot invite another player during a match");
 			}
 			else if (command is ListCommand)
 			{
-				Console.WriteLine("You must log in first");
+				Console.WriteLine("You cannot access the online user list during a match");
 			}
 			else if (command is LoginCommand)
 			{
-				int statusCode = command.Execute();
-				if (statusCode == 0)
-				{
-					this._client.UserState = new LoggedIn(this._client);
-				}
+				Console.WriteLine("You are already logged in");
 			}
 			else if (command is LogoutCommand)
 			{
-				Console.WriteLine("You are not logged in");
+				Console.WriteLine("You cannot log out during a match");
 			}
 			else if (command is RegisterCommand)
 			{
-				command.Execute();
+				Console.WriteLine("You cannot register during a match");
 			}
 		}
 	}
