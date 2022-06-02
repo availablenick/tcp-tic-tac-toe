@@ -32,7 +32,7 @@ namespace TicTacToe.ClientSide
 			this.ListeningSocket = null;
 			this.PeerSocket = null;
 			this.HandlerCreator = new MessageHandlerCreator(this);
-			this.UserState = new LoggedOut(this);
+			this.UserState = new LoggedOut();
 			this.ReceiveBuffer = new Byte[1024];
 			this.SendBuffer = new Byte[1024];
 			this.Reader = new InputReader();

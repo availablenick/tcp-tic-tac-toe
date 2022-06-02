@@ -4,13 +4,6 @@ namespace TicTacToe.ClientSide
 {
 	public class Playing : IUserState
 	{
-		public Client _client { get; set; }
-
-		public Playing(Client client)
-		{
-			this._client = client;
-		}
-
 		public void ExecuteCommand(Command command)
 		{
 			if (command is InviteCommand)

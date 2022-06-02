@@ -17,6 +17,6 @@ namespace TicTacToe.ClientSide
 			}
 		}
 
-		public abstract int Execute();
+		public abstract void Execute();
 	}
 }

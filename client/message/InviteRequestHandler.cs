@@ -57,7 +57,7 @@ namespace TicTacToe.ClientSide
 				SocketHelper.SendMessage(this._client.ServerSocket,
 					this._client.SendBuffer, $"resinvite {assignedPort}");
 				this._client.PeerSocket = this._client.ListeningSocket.Accept();
-				this._client.UserState = new Playing(this._client);
+				this._client.UserState = new Playing();
 				Console.WriteLine($"You are now in a match with {username}");
 			}
 			else

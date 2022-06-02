@@ -4,13 +4,6 @@ namespace TicTacToe.ClientSide
 {
 	public class LoggedOut : IUserState
 	{
-		public Client _client { get; set; }
-
-		public LoggedOut(Client client)
-		{
-			this._client = client;
-		}
-
 		public void ExecuteCommand(Command command)
 		{
 			if (command is InviteCommand)
@@ -23,11 +16,7 @@ namespace TicTacToe.ClientSide
 			}
 			else if (command is LoginCommand)
 			{
-				int statusCode = command.Execute();
-				if (statusCode == 0)
-				{
-					this._client.UserState = new LoggedIn(this._client);
-				}
+				command.Execute();
 			}
 			else if (command is LogoutCommand)
 			{
