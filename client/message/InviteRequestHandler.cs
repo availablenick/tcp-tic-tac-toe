@@ -57,8 +57,9 @@ namespace TicTacToe.ClientSide
 				SocketHelper.SendMessage(this._client.ServerSocket,
 					this._client.SendBuffer, $"resinvite {assignedPort}");
 				this._client.PeerSocket = this._client.ListeningSocket.Accept();
-				this._client.UserState = new Playing();
-				Console.WriteLine($"You are now in a match with {username}");
+				this._client.UserState = new PlayingAsX(this._client);
+				Console.WriteLine($"You are now in a match with {username}. "
+					+ "You have the first move (your symbol is X)");
 			}
 			else
 			{

@@ -2,11 +2,11 @@ using System;
 
 namespace TicTacToe.ClientSide
 {
-	public class LoggedOut : IUserState
+	public class PlayingAsX : IUserState
 	{
 		private Client _client;
 
-		public LoggedOut(Client client)
+		public PlayingAsX(Client client)
 		{
 			this._client = client;
 		}
@@ -33,6 +33,15 @@ namespace TicTacToe.ClientSide
 				Console.WriteLine(exception.Message);
 			}
 
+			if (this._client.PeerSocket != null)
+			{
+				string peerMessage = SocketHelper.ReceiveMessage(
+					this._client.PeerSocket, this._client.ReceiveBuffer);
+				IMessageHandler handler = this._client.HandlerCreator
+					.CreateHandlerFor(peerMessage);
+				handler.HandleMessage();
+			}
+
 			return false;
 		}
 
@@ -40,23 +49,27 @@ namespace TicTacToe.ClientSide
 		{
 			if (command is InviteCommand)
 			{
-				Console.WriteLine("You must log in first");
+				Console.WriteLine("You cannot invite another player during a match");
 			}
 			else if (command is ListCommand)
 			{
-				Console.WriteLine("You must log in first");
+				Console.WriteLine("You cannot access the online user list during a match");
 			}
 			else if (command is LoginCommand)
 			{
-				command.Execute();
+				Console.WriteLine("You are already logged in");
 			}
 			else if (command is LogoutCommand)
 			{
-				Console.WriteLine("You are not logged in");
+				Console.WriteLine("You cannot log out during a match");
+			}
+			else if (command is QuitCommand)
+			{
+				command.Execute();
 			}
 			else if (command is RegisterCommand)
 			{
-				command.Execute();
+				Console.WriteLine("You cannot register during a match");
 			}
 		}
 	}

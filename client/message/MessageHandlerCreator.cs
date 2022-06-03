@@ -44,6 +44,9 @@ namespace TicTacToe.ClientSide
 						}
 
 						break;
+					case "reqquit":
+						return new QuitRequestHandler(this._client);
+
 					case "resinvite":
 						data = messageMembers[1];
 						statusCode = messageMembers[2];

@@ -9,10 +9,11 @@ namespace TicTacToe.ClientSide
 		public Socket ListeningSocket { get; set; }
 		public Socket ServerSocket { get; }
 		public Socket PeerSocket { get; set; }
-		public MessageHandlerCreator HandlerCreator { get; }
-		public IUserState UserState { get; set; }
 		public Byte[] ReceiveBuffer { get; }
 		public Byte[] SendBuffer { get; }
+		public CommandParser Parser { get; }
+		public MessageHandlerCreator HandlerCreator { get; }
+		public IUserState UserState { get; set; }
 		public InputReader Reader { get; }
 
 		public Client(string serverAddress, int serverPort)
@@ -31,62 +32,27 @@ namespace TicTacToe.ClientSide
 
 			this.ListeningSocket = null;
 			this.PeerSocket = null;
-			this.HandlerCreator = new MessageHandlerCreator(this);
-			this.UserState = new LoggedOut();
 			this.ReceiveBuffer = new Byte[1024];
 			this.SendBuffer = new Byte[1024];
+			this.Parser = new CommandParser(this);
+			this.HandlerCreator = new MessageHandlerCreator(this);
+			this.UserState = new LoggedOut(this);
 			this.Reader = new InputReader();
 		}
 
 		public void HandleInput()
 		{
-			CommandParser parser = new CommandParser(this);
-			Func<bool> didServerSendMessage = DidServerSendMessage;
-			string line;
 			while (true)
 			{
-				Console.Write("> ");
-				line = this.Reader.ReadLine(didServerSendMessage);
-				if (line == null)
+				bool shouldStopHandlingInput = this.UserState.HandleInput();
+				if (shouldStopHandlingInput)
 				{
-					continue;
-				}
-
-				try
-				{
-					Command command = parser.Parse(line.ToString());
-					if (command != null)
-					{
-						this.UserState.ExecuteCommand(command);
-					}
-				}
-				catch (InvalidCommandException exception)
-				{
-					Console.WriteLine(exception.Message);
+					break;
 				}
 			}
 
 			Console.WriteLine("End");
 			this.ServerSocket.Close();
-		}
-
-		private bool DidServerSendMessage()
-		{
-			if (this.UserState is LoggedIn)
-			{
-				if (this.ServerSocket.Available > 0)
-				{
-					string serverMessage = SocketHelper.ReceiveMessage(
-						this.ServerSocket, this.ReceiveBuffer);
-					IMessageHandler handler = this.HandlerCreator
-						.CreateHandlerFor(serverMessage);
-					handler.HandleMessage();
-
-					return true;	
-				}
-			}
-
-			return false;
 		}
 	}
 }

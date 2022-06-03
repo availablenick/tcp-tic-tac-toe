@@ -42,7 +42,8 @@ namespace TicTacToe.ClientSide
 						return 1;
 					}
 
-					Console.WriteLine($"You are now in a match with {username}");
+					Console.WriteLine($"You are now in a match with {username}. " +
+						$"{username} has the first move (your symbol is O)");
 
 					return 0;
 				case 1:

@@ -31,7 +31,7 @@ namespace TicTacToe.ClientSide
 			int statusCode = handler.HandleMessage();
 			if (statusCode == 0)
 			{
-				this._client.UserState = new LoggedIn();
+				this._client.UserState = new LoggedIn(this._client);
 			}
 		}
 	}
