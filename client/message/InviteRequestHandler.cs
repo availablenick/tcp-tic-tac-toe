@@ -34,7 +34,7 @@ namespace TicTacToe.ClientSide
 			Console.Write($"\n{username} is inviting you for a match. Do you accept? [y/n] ");
 			Func<bool> isTimeForReplyUp = IsTimeForReplyUp;
 			this._stopwatch.Start();
-			string answer = this._client.Reader.ReadLine(isTimeForReplyUp);
+			string answer = this._client.InputReader.ReadLine(isTimeForReplyUp);
 			this._stopwatch.Stop();
 
 			if (answer == null)

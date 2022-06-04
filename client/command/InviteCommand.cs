@@ -24,7 +24,7 @@ namespace TicTacToe.ClientSide
 				this._client.SendBuffer, requestMessage);
 			string responseMessage = SocketHelper.ReceiveMessage(
 				this._client.ServerSocket, this._client.ReceiveBuffer);
-			IMessageHandler handler = this._client.HandlerCreator.CreateHandlerFor(
+			IMessageHandler handler = this._client.MessageHandlerCreator.CreateHandlerFor(
 				responseMessage);
 			int result = handler.HandleMessage();
 			if (result == 0)

@@ -11,10 +11,10 @@ namespace TicTacToe.ClientSide
 		public Socket PeerSocket { get; set; }
 		public Byte[] ReceiveBuffer { get; }
 		public Byte[] SendBuffer { get; }
-		public CommandParser Parser { get; }
-		public MessageHandlerCreator HandlerCreator { get; }
+		public CommandParser CommandParser { get; }
+		public MessageHandlerCreator MessageHandlerCreator { get; }
 		public IUserState UserState { get; set; }
-		public InputReader Reader { get; }
+		public InputReader InputReader { get; }
 		public Board Board { get; set; }
 
 		public Client(string serverAddress, int serverPort)
@@ -35,10 +35,10 @@ namespace TicTacToe.ClientSide
 			this.PeerSocket = null;
 			this.ReceiveBuffer = new Byte[1024];
 			this.SendBuffer = new Byte[1024];
-			this.Parser = new CommandParser(this);
-			this.HandlerCreator = new MessageHandlerCreator(this);
+			this.CommandParser = new CommandParser(this);
+			this.MessageHandlerCreator = new MessageHandlerCreator(this);
 			this.UserState = new LoggedOut(this);
-			this.Reader = new InputReader();
+			this.InputReader = new InputReader();
 			this.Board = null;
 		}
 

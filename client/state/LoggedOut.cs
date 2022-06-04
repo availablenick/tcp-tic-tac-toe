@@ -22,7 +22,7 @@ namespace TicTacToe.ClientSide
 
 			try
 			{
-				Command command = this._client.Parser.Parse(line);
+				Command command = this._client.CommandParser.Parse(line);
 				if (command != null)
 				{
 					ExecuteCommand(command);

@@ -15,7 +15,7 @@ namespace TicTacToe.ClientSide
 		{
 			string peerMessage = SocketHelper.ReceiveMessage(
 				this._client.PeerSocket, this._client.ReceiveBuffer);
-			IMessageHandler handler = this._client.HandlerCreator
+			IMessageHandler handler = this._client.MessageHandlerCreator
 				.CreateHandlerFor(peerMessage);
 			handler.HandleMessage();
 			if (this._client.PeerSocket == null)
@@ -35,7 +35,7 @@ namespace TicTacToe.ClientSide
 
 				try
 				{
-					Command command = this._client.Parser.Parse(line);
+					Command command = this._client.CommandParser.Parse(line);
 					if (command != null)
 					{
 						int result = ExecuteCommand(command);

@@ -15,7 +15,7 @@ namespace TicTacToe.ClientSide
 		{
 			Func<bool> didReceiveServerMessage = DidReceiveServerMessage;
 			Console.Write("> ");
-			string line = this._client.Reader.ReadLine(didReceiveServerMessage);			
+			string line = this._client.InputReader.ReadLine(didReceiveServerMessage);			
 			if (line == null)
 			{
 				return false;
@@ -23,7 +23,7 @@ namespace TicTacToe.ClientSide
 
 			try
 			{
-				Command command = this._client.Parser.Parse(line);
+				Command command = this._client.CommandParser.Parse(line);
 				if (command != null)
 				{
 					ExecuteCommand(command);
@@ -43,7 +43,7 @@ namespace TicTacToe.ClientSide
 			{
 				string serverMessage = SocketHelper.ReceiveMessage(
 					this._client.ServerSocket, this._client.ReceiveBuffer);
-				IMessageHandler handler = this._client.HandlerCreator
+				IMessageHandler handler = this._client.MessageHandlerCreator
 					.CreateHandlerFor(serverMessage);
 				handler.HandleMessage();
 
