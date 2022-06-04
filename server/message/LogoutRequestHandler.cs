@@ -18,7 +18,7 @@ namespace TicTacToe.ServerSide
 		{
 			string remoteEndpoint = this._clientSocket.RemoteEndPoint.ToString();
 			int statusCode = 1;
-			if (this._server.IsUserOnline(remoteEndpoint))
+			if (this._server.UserIsOnline(remoteEndpoint))
 			{
 				statusCode = 0;
 				this._server.RemoveOnlineUser(remoteEndpoint);

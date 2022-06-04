@@ -28,7 +28,7 @@ namespace TicTacToe.ServerSide
 			string username = data[0];
 			string password = data[1];
 			int statusCode = 0;
-			if (this._server.IsUserOnline(username)) {
+			if (this._server.UserIsOnline(username)) {
 				statusCode = 2;
 			}
 			else

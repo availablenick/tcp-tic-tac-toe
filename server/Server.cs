@@ -77,7 +77,7 @@ namespace TicTacToe.ServerSide
 			this.MutexLock.ReleaseMutex();
 		}
 
-		public bool IsUserOnline(string key)
+		public bool UserIsOnline(string key)
 		{
 			return this.EndpointByUsername.ContainsKey(key) ||
 				this.UsernameByEndpoint.ContainsKey(key);

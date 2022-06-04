@@ -18,7 +18,7 @@ namespace TicTacToe.ClientSide
 			this._stopwatch = new Stopwatch();
 		}
 
-		private bool IsTimeForReplyUp()
+		private bool TimeForReplyIsUp()
 		{
 			if (this._stopwatch.Elapsed.Seconds >= 5)
 			{
@@ -32,9 +32,9 @@ namespace TicTacToe.ClientSide
 		{
 			string username = this._data;
 			Console.Write($"\n{username} is inviting you for a match. Do you accept? [y/n] ");
-			Func<bool> isTimeForReplyUp = IsTimeForReplyUp;
+			Func<bool> timeForReplyIsUp = TimeForReplyIsUp;
 			this._stopwatch.Start();
-			string answer = this._client.InputReader.ReadLine(isTimeForReplyUp);
+			string answer = this._client.InputReader.ReadLine(timeForReplyIsUp);
 			this._stopwatch.Stop();
 
 			if (answer == null)

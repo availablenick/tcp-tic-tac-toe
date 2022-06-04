@@ -31,7 +31,7 @@ namespace TicTacToe.ServerSide
 			}
 
 			string responseMessage = $"resinvite {invitedUserUsername} 1";
-			if (this._server.IsUserOnline(invitedUserUsername))
+			if (this._server.UserIsOnline(invitedUserUsername))
 			{
 				Socket invitedUserSocket = GetInvitedUserSocket(invitedUserUsername);
 				string invitedUserEndpoint = this._server.EndpointByUsername[invitedUserUsername];
