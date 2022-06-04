@@ -21,6 +21,18 @@ namespace TicTacToe.ClientSide
 				string command = groups[1].Value.ToLower();
 				switch (command)
 				{
+					case "exit":
+						if (HasCorrectNumberOfParameters(
+								ExitCommand.NumberOfParameters, groups))
+						{
+							return new ExitCommand(CreateParameterArray(
+								ExitCommand.NumberOfParameters, groups),
+								this._client);
+						}
+
+						throw new InvalidCommandException(
+							ExitCommand.WrongNumberOfParametersMessage);
+
 					case "invite":
 						if (HasCorrectNumberOfParameters(
 								InviteCommand.NumberOfParameters, groups))

@@ -55,7 +55,11 @@ namespace TicTacToe.ClientSide
 
 		private void ExecuteCommand(Command command)
 		{
-			if (command is InviteCommand)
+			if (command is ExitCommand)
+			{
+				command.Execute();
+			}
+			else if (command is InviteCommand)
 			{
 				command.Execute();
 			}

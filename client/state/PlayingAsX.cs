@@ -55,7 +55,12 @@ namespace TicTacToe.ClientSide
 
 		private int ExecuteCommand(Command command)
 		{
-			if (command is InviteCommand)
+			if (command is ExitCommand)
+			{
+				Console.WriteLine("You must either quit or finish your match first");
+				return 1;
+			}
+			else if (command is InviteCommand)
 			{
 				Console.WriteLine("You cannot invite another player during a match");
 				return 1;
