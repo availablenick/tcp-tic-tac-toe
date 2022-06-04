@@ -16,23 +16,27 @@ namespace TicTacToe.ClientSide
 			this._client = client;
 		}
 
-		public override void Execute()
+		public override int Execute()
 		{
-			if (this._client.PeerSocket != null)
+			if (this._client.PeerSocket == null)
 			{
-				string requestMessage = "reqquit";
-				SocketHelper.SendMessage(this._client.PeerSocket,
-					this._client.SendBuffer, requestMessage);
-				this._client.PeerSocket.Close();
-				this._client.PeerSocket = null;
-				if (this._client.ListeningSocket != null)
-				{
-					this._client.ListeningSocket.Close();
-					this._client.ListeningSocket = null;
-				}
-
-				this._client.UserState = new LoggedIn(this._client);
+				return 1;
 			}
+
+			string requestMessage = "reqquit";
+			SocketHelper.SendMessage(this._client.PeerSocket,
+				this._client.SendBuffer, requestMessage);
+			this._client.PeerSocket.Close();
+			this._client.PeerSocket = null;
+			if (this._client.ListeningSocket != null)
+			{
+				this._client.ListeningSocket.Close();
+				this._client.ListeningSocket = null;
+			}
+
+			this._client.UserState = new LoggedIn(this._client);
+
+			return 0;
 		}
 	}
 }

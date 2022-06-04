@@ -43,7 +43,8 @@ namespace TicTacToe.ClientSide
 					}
 
 					Console.WriteLine($"You are now in a match with {username}. " +
-						$"{username} has the first move (your symbol is O)");
+						"Your mark is O");
+					Console.WriteLine("Waiting for opponent's move...");
 
 					return 0;
 				case 1:

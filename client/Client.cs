@@ -15,6 +15,7 @@ namespace TicTacToe.ClientSide
 		public MessageHandlerCreator HandlerCreator { get; }
 		public IUserState UserState { get; set; }
 		public InputReader Reader { get; }
+		public Board Board { get; set; }
 
 		public Client(string serverAddress, int serverPort)
 		{
@@ -38,6 +39,7 @@ namespace TicTacToe.ClientSide
 			this.HandlerCreator = new MessageHandlerCreator(this);
 			this.UserState = new LoggedOut(this);
 			this.Reader = new InputReader();
+			this.Board = null;
 		}
 
 		public void HandleInput()
@@ -53,6 +55,11 @@ namespace TicTacToe.ClientSide
 
 			Console.WriteLine("End");
 			this.ServerSocket.Close();
+		}
+
+		public void UpdateBoard()
+		{
+
 		}
 	}
 }

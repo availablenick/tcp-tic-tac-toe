@@ -13,24 +13,32 @@ namespace TicTacToe.ClientSide
 
 		public bool HandleInput()
 		{
-			Console.Write("> ");
-			string line = Console.ReadLine();
-			if (line == null)
+			Console.WriteLine("It is your turn");
+			while (true)
 			{
-				return true;
-			}
-
-			try
-			{
-				Command command = this._client.Parser.Parse(line);
-				if (command != null)
+				Console.Write("> ");
+				string line = Console.ReadLine();
+				if (line == null)
 				{
-					ExecuteCommand(command);
+					return true;
 				}
-			}
-			catch (InvalidCommandException exception)
-			{
-				Console.WriteLine(exception.Message);
+
+				try
+				{
+					Command command = this._client.Parser.Parse(line);
+					if (command != null)
+					{
+						int result = ExecuteCommand(command);
+						if (result == 0)
+						{
+							break;
+						}
+					}
+				}
+				catch (InvalidCommandException exception)
+				{
+					Console.WriteLine(exception.Message);
+				}
 			}
 
 			if (this._client.PeerSocket != null)
@@ -45,32 +53,43 @@ namespace TicTacToe.ClientSide
 			return false;
 		}
 
-		private void ExecuteCommand(Command command)
+		private int ExecuteCommand(Command command)
 		{
 			if (command is InviteCommand)
 			{
 				Console.WriteLine("You cannot invite another player during a match");
+				return 1;
 			}
 			else if (command is ListCommand)
 			{
 				Console.WriteLine("You cannot access the online user list during a match");
+				return 1;
 			}
 			else if (command is LoginCommand)
 			{
 				Console.WriteLine("You are already logged in");
+				return 1;
 			}
 			else if (command is LogoutCommand)
 			{
 				Console.WriteLine("You cannot log out during a match");
+				return 1;
 			}
 			else if (command is QuitCommand)
 			{
-				command.Execute();
+				return command.Execute();
 			}
 			else if (command is RegisterCommand)
 			{
 				Console.WriteLine("You cannot register during a match");
+				return 1;
 			}
+			else if (command is SendCommand)
+			{
+				return command.Execute();
+			}
+
+			return 1;
 		}
 	}
 }

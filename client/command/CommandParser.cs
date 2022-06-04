@@ -93,6 +93,18 @@ namespace TicTacToe.ClientSide
 						throw new InvalidCommandException(
 							RegisterCommand.WrongNumberOfParametersMessage);
 
+					case "send":
+						if (HasCorrectNumberOfParameters(
+								SendCommand.NumberOfParameters, groups))
+						{
+							return new SendCommand(CreateParameterArray(
+								SendCommand.NumberOfParameters, groups),
+								this._client);
+						}
+
+						throw new InvalidCommandException(
+							SendCommand.WrongNumberOfParametersMessage);
+
 					default:
 						throw new InvalidCommandException($"Command \"{command}\" not recognized");
 				}

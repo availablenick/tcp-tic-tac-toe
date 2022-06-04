@@ -54,9 +54,17 @@ namespace TicTacToe.ClientSide
 			{
 				Console.WriteLine("You are not logged in");
 			}
+			else if (command is QuitCommand)
+			{
+				Console.WriteLine("You are not in a match");
+			}
 			else if (command is RegisterCommand)
 			{
 				command.Execute();
+			}
+			else if (command is SendCommand)
+			{
+				Console.WriteLine("You are not in a match");
 			}
 		}
 	}
