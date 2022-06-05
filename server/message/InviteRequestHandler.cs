@@ -7,19 +7,12 @@ namespace TicTacToe.ServerSide
 	public class InviteRequestHandler : IMessageHandler
 	{
 		private string _data;
-		private Server _server;
-		private Socket _clientSocket;
-		private Byte[] _receiveBuffer;
-		private Byte[] _sendBuffer;
+		private ConnectionHandler _connectionHandler;
 
-		public InviteRequestHandler(string data, Server server,
-			Socket clientSocket, Byte[] receiveBuffer, Byte[] sendBuffer)
+		public InviteRequestHandler(string data, ConnectionHandler connectionHandler)
 		{
 			this._data = data;
-			this._server = server;
-			this._clientSocket = clientSocket;
-			this._receiveBuffer = receiveBuffer;
-			this._sendBuffer = sendBuffer;
+			this._connectionHandler = connectionHandler;
 		}
 
 		public string HandleMessage()
@@ -31,11 +24,11 @@ namespace TicTacToe.ServerSide
 			}
 
 			string responseMessage = $"resinvite {invitedUserUsername} 1";
-			if (this._server.UserIsOnline(invitedUserUsername))
+			if (this._connectionHandler.Server.UserIsOnline(invitedUserUsername))
 			{
 				Socket invitedUserSocket = GetInvitedUserSocket(invitedUserUsername);
-				string invitedUserEndpoint = this._server.EndpointByUsername[invitedUserUsername];
-				this._server.NotifyThread(invitedUserEndpoint, false);
+				string invitedUserEndpoint = this._connectionHandler.Server.EndpointByUsername[invitedUserUsername];
+				this._connectionHandler.Server.NotifyThread(invitedUserEndpoint, false);
 				AskInvitedUser(invitedUserSocket);
 				Stopwatch stopwatch = new Stopwatch();
 				stopwatch.Start();
@@ -50,14 +43,14 @@ namespace TicTacToe.ServerSide
 
 					if (invitedUserSocket.Available > 0)
 					{
-						string invitationReply = SocketHelper.ReceiveMessage(invitedUserSocket,
-							this._receiveBuffer);
+						string invitationReply = SocketHelper.ReceiveMessage(
+							invitedUserSocket, this._connectionHandler.ReceiveBuffer);
 						responseMessage = CreateResponseMessage(invitationReply);
 						break;
 					}
 				}
 
-				this._server.NotifyThread(invitedUserEndpoint, true);
+				this._connectionHandler.Server.NotifyThread(invitedUserEndpoint, true);
 			}
 
 			return responseMessage;
@@ -67,25 +60,26 @@ namespace TicTacToe.ServerSide
 		{
 			string invitingUserUsername = GetInvitingUserUsername();
 			string invitationMessage = $"reqinvite {invitingUserUsername}";
-			SocketHelper.SendMessage(invitedUserSocket, this._sendBuffer, invitationMessage);
+			SocketHelper.SendMessage(invitedUserSocket,
+				this._connectionHandler.SendBuffer, invitationMessage);
 		}
 
 		private string GetInvitingUserUsername()
 		{
-			string invitingUserEndpoint = this._clientSocket.RemoteEndPoint.ToString();
-			return this._server.UsernameByEndpoint[invitingUserEndpoint];
+			string invitingUserEndpoint = this._connectionHandler.ClientSocket.RemoteEndPoint.ToString();
+			return this._connectionHandler.Server.UsernameByEndpoint[invitingUserEndpoint];
 		}
 
 		private Socket GetInvitedUserSocket(string invitedUserUsername)
 		{
-			string invitedUserEndpoint = this._server.EndpointByUsername[invitedUserUsername];
-			return this._server.SocketByEndpoint[invitedUserEndpoint];
+			string invitedUserEndpoint = this._connectionHandler.Server.EndpointByUsername[invitedUserUsername];
+			return this._connectionHandler.Server.SocketByEndpoint[invitedUserEndpoint];
 		}
 
 		private string CreateResponseMessage(string invitationReply)
 		{
 			string invitedUserUsername = this._data;
-			string invitedUserEndpoint = this._server.EndpointByUsername[invitedUserUsername];
+			string invitedUserEndpoint = this._connectionHandler.Server.EndpointByUsername[invitedUserUsername];
 			string[] messageMembers = MessageHandlerCreator.ParseMessage(invitationReply);
 			if (messageMembers != null)
 			{

@@ -8,11 +8,11 @@ namespace TicTacToe.ServerSide
 	public class Server
 	{
 		private Socket _listeningSocket;
-		private Dictionary<string, ThreadDataWrapper> _threadDataWrapperByEndpoint;
+		private Dictionary<string, ConnectionHandler> _connectionHandlerByEndpoint;
 		public Dictionary<string, Socket> SocketByEndpoint { get; }
 		public Dictionary<string, string> UsernameByEndpoint { get; }
 		public Dictionary<string, string> EndpointByUsername { get; }
-		public Mutex MutexLock { get; }
+		public Mutex Mutex { get; }
 
 		public Server() : this(3000) {}
 
@@ -27,11 +27,11 @@ namespace TicTacToe.ServerSide
 				return;
 			}
 
-			this._threadDataWrapperByEndpoint = new Dictionary<string, ThreadDataWrapper>();
+			this._connectionHandlerByEndpoint = new Dictionary<string, ConnectionHandler>();
 			this.SocketByEndpoint = new Dictionary<string, Socket>();
 			this.UsernameByEndpoint = new Dictionary<string, string>();
 			this.EndpointByUsername = new Dictionary<string, string>();
-			this.MutexLock = new Mutex();
+			this.Mutex = new Mutex();
 
 			int statusCode = FileHelper.CreateUserDataFile();
 			if (statusCode != 0)
@@ -47,34 +47,34 @@ namespace TicTacToe.ServerSide
 			while (true)
 			{
 				Console.WriteLine("Waiting for incoming connections...");
-				Socket connectionSocket = this._listeningSocket.Accept();
-				connectionSocket.Blocking = false;
-				string remoteEndpoint = connectionSocket.RemoteEndPoint.ToString();
-				this.SocketByEndpoint.Add(remoteEndpoint, connectionSocket);
+				Socket clientSocket = this._listeningSocket.Accept();
+				clientSocket.Blocking = false;
+				string remoteEndpoint = clientSocket.RemoteEndPoint.ToString();
+				this.SocketByEndpoint.Add(remoteEndpoint, clientSocket);
 				Console.WriteLine("Connection accepted...");
 
-				ThreadDataWrapper wrapper = new ThreadDataWrapper(this, connectionSocket);
-				this._threadDataWrapperByEndpoint.Add(remoteEndpoint, wrapper);
-				Thread thread = new Thread(new ThreadStart(wrapper.HandleConnection));
+				ConnectionHandler handler = new ConnectionHandler(this, clientSocket);
+				this._connectionHandlerByEndpoint.Add(remoteEndpoint, handler);
+				Thread thread = new Thread(new ThreadStart(handler.HandleConnection));
 				thread.Start();
 			}
 		}
 
 		public void AddOnlineUser(string username, string remoteEndpoint)
 		{
-			this.MutexLock.WaitOne();
+			this.Mutex.WaitOne();
 			this.UsernameByEndpoint.Add(remoteEndpoint, username);
 			this.EndpointByUsername.Add(username, remoteEndpoint);
-			this.MutexLock.ReleaseMutex();
+			this.Mutex.ReleaseMutex();
 		}
 
 		public void RemoveOnlineUser(string remoteEndpoint)
 		{
 			string username = this.UsernameByEndpoint[remoteEndpoint];
-			this.MutexLock.WaitOne();
+			this.Mutex.WaitOne();
 			this.UsernameByEndpoint.Remove(remoteEndpoint);
 			this.EndpointByUsername.Remove(username);
-			this.MutexLock.ReleaseMutex();
+			this.Mutex.ReleaseMutex();
 		}
 
 		public bool UserIsOnline(string key)
@@ -85,9 +85,9 @@ namespace TicTacToe.ServerSide
 
 		public void NotifyThread(string endpoint, bool shouldReadData)
 		{
-			if (this._threadDataWrapperByEndpoint.ContainsKey(endpoint))
+			if (this._connectionHandlerByEndpoint.ContainsKey(endpoint))
 			{
-				this._threadDataWrapperByEndpoint[endpoint].ShouldReadData = shouldReadData;
+				this._connectionHandlerByEndpoint[endpoint].ShouldReadData = shouldReadData;
 			}
 		}
 	}

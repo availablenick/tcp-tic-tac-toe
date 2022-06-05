@@ -1,5 +1,4 @@
 using System;
-using System.Net.Sockets;
 using System.Text;
 
 namespace TicTacToe.ServerSide
@@ -7,12 +6,10 @@ namespace TicTacToe.ServerSide
 	public class ListRequestHandler : IMessageHandler
 	{
 		private Server _server;
-		private Socket _clientSocket;
 
-		public ListRequestHandler(Server server, Socket clientSocket)
+		public ListRequestHandler(Server server)
 		{
 			this._server = server;
-			this._clientSocket = clientSocket;
 		}
 
 		public string HandleMessage()

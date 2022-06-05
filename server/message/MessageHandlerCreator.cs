@@ -1,25 +1,16 @@
 using System;
 using System.Collections.Generic;
-using System.Net.Sockets;
 using System.Text.RegularExpressions;
-using System.Threading;
 
 namespace TicTacToe.ServerSide
 {
 	public class MessageHandlerCreator
 	{
-		private Server _server;
-		private Socket _clientSocket;
-		private Byte[] _receiveBuffer { get; }
-		private Byte[] _sendBuffer { get; }
+		private ConnectionHandler _connectionHandler;
 
-		public MessageHandlerCreator(Server server, Socket clientSocket,
-			Byte[] receiveBuffer, Byte[] sendBuffer)
+		public MessageHandlerCreator(ConnectionHandler connectionHandler)
 		{
-			this._server = server;
-			this._clientSocket = clientSocket;
-			this._receiveBuffer = receiveBuffer;
-			this._sendBuffer = sendBuffer;
+			this._connectionHandler = connectionHandler;
 		}
 
 		public static string[] ParseMessage(string message)
@@ -47,33 +38,32 @@ namespace TicTacToe.ServerSide
 					case "reqinvite":
 						if (data != "")
 						{
-							return new InviteRequestHandler(data, this._server,
-								this._clientSocket, this._receiveBuffer,
-								this._sendBuffer);
+							return new InviteRequestHandler(data,
+								this._connectionHandler);
 						}
 
 						break;
 					case "reqlist":
-						return new ListRequestHandler(this._server,
-							this._clientSocket);
+						return new ListRequestHandler(this._connectionHandler.Server);
 
 					case "reqlogin":
 						if (data != "")
 						{
-							return new LoginRequestHandler(data, this._server,
-								this._clientSocket);
+							return new LoginRequestHandler(data,
+								this._connectionHandler.Server,
+								this._connectionHandler.ClientSocket);
 						}
 
 						break;
 					case "reqlogout":
-						return new LogoutRequestHandler(this._server,
-							this._clientSocket);
+						return new LogoutRequestHandler(this._connectionHandler.Server,
+							this._connectionHandler.ClientSocket);
 
 					case "reqregister":
 						if (data != "")
 						{
 							return new RegisterRequestHandler(data,
-								this._server.MutexLock);
+								this._connectionHandler.Server.Mutex);
 						}
 
 						break;
