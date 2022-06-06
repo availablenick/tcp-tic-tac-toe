@@ -50,23 +50,10 @@ namespace TicTacToe
 			socket.Send(buffer, message.Length, 0);
 		}
 
-		public static string ReceiveMessage(Socket socket, Byte[] buffer, int timeout)
-		{
-			socket.ReceiveTimeout = timeout;
-			try {
-				int numberOfReceivedBytes = socket.Receive(buffer, buffer.Length, 0);
-				return BufferHelper.GetBufferMessage(buffer, numberOfReceivedBytes);
-			}
-			catch (SocketException) {
-				socket.ReceiveTimeout = -1;
-			}
-
-			return null;
-		}
-
 		public static string ReceiveMessage(Socket socket, Byte[] buffer)
 		{
-			return ReceiveMessage(socket, buffer, -1);
+			int numberOfReceivedBytes = socket.Receive(buffer, buffer.Length, 0);
+			return BufferHelper.GetBufferMessage(buffer, numberOfReceivedBytes);
 		}
 	}
 }
