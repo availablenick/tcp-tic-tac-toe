@@ -35,6 +35,9 @@ namespace TicTacToe.ServerSide
 				string data = messageMembers[1];
 				switch (messageType)
 				{
+					case "reqexit":
+						return new ExitRequestHandler(this._connectionHandler);
+
 					case "reqinvite":
 						if (data != "")
 						{

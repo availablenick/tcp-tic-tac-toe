@@ -13,6 +13,7 @@ namespace TicTacToe.ServerSide
 		public Byte[] ReceiveBuffer { get; }
 		public Byte[] SendBuffer { get; }
 		public bool ShouldReadData { get; set; }
+		public bool ClientIsConnected { get; set; }
 		private string _remoteEndpoint;
 		private Stopwatch _pingRequestStopwatch;
 		private Stopwatch _pingResponseStopwatch;
@@ -24,6 +25,7 @@ namespace TicTacToe.ServerSide
 			this.ReceiveBuffer = new Byte[1024];
 			this.SendBuffer = new Byte[1024];
 			this.ShouldReadData = true;
+			this.ClientIsConnected = true;
 			this._remoteEndpoint = this.ClientSocket.RemoteEndPoint.ToString();
 			this._pingRequestStopwatch = new Stopwatch();
 			this._pingResponseStopwatch = new Stopwatch();
@@ -34,7 +36,7 @@ namespace TicTacToe.ServerSide
 			Console.WriteLine($"[{Thread.CurrentThread.ManagedThreadId}] New client connected");
 			MessageHandlerCreator handlerCreator = new MessageHandlerCreator(this);
 			this._pingRequestStopwatch.Start();
-			while (true)
+			while (this.ClientIsConnected)
 			{
 				if (this.ShouldReadData)
 				{

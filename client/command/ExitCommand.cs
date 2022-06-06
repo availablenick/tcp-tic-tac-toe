@@ -17,11 +17,10 @@ namespace TicTacToe.ClientSide
 
 		public override int Execute()
 		{
-			if (this._client.ServerSocket != null)
-			{
-				this._client.ServerSocket.Close();
-			}
-
+			string requestMessage = "reqexit\n";
+			SocketHelper.SendMessage(this._client.ServerSocket,
+				this._client.SendBuffer, requestMessage);
+			this._client.ServerSocket.Close();
 			Environment.Exit(0);
 
 			return 0;
