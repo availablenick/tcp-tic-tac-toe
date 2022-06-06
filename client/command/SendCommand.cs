@@ -40,7 +40,7 @@ namespace TicTacToe.ClientSide
 			}
 
 			this._client.Board.Print();
-			string requestMessage = $"reqsend {row};{column}";
+			string requestMessage = $"reqsend {row};{column}\n";
 			SocketHelper.SendMessage(this._client.PeerSocket,
 				this._client.SendBuffer, requestMessage);
 			if (this._client.Board.HasWinner())

@@ -6,30 +6,27 @@ namespace TicTacToe.ClientSide
 	public class InputReader
 	{
 		private StringBuilder _buffer;
+		public bool ShouldRead { get; set; }
 
 		public InputReader()
 		{
 			this._buffer = new StringBuilder();
+			this.ShouldRead = true;
 		}
 
-		public string ReadLine()
-		{
-			Func<bool> func = () => false;
-			return ReadLine(func);
-		}
-
-		public string ReadLine(Func<bool> somethingToDo)
+		public void Reset()
 		{
 			this._buffer.Clear();
+		}
+
+		public string ReadLine(Action somethingToDo)
+		{
+			Reset();
+			this.ShouldRead = true;
 			int cursorInitialPosition = Console.CursorLeft;
-			while (true)
+			while (this.ShouldRead)
 			{
-				bool shouldStopReadingInput = somethingToDo();
-				if (shouldStopReadingInput)
-				{
-					return null;
-				}
-				
+				somethingToDo();
 				if (Console.KeyAvailable)
 				{
 					ConsoleKeyInfo info = Console.ReadKey(true);
@@ -65,6 +62,55 @@ namespace TicTacToe.ClientSide
 			}
 
 			return this._buffer.ToString();
+		}
+
+		public static string ReadLine(Func<bool> somethingToDo)
+		{
+			StringBuilder buffer = new StringBuilder();
+			int cursorInitialPosition = Console.CursorLeft;
+			while (true)
+			{
+				bool shouldStopReading = somethingToDo();
+				if (shouldStopReading)
+				{
+					break;
+				}
+
+				if (Console.KeyAvailable)
+				{
+					ConsoleKeyInfo info = Console.ReadKey(true);
+					if (info.Key == ConsoleKey.Enter)
+					{
+						Console.Write(info.KeyChar);
+						break;
+					}
+					else if (info.Key == ConsoleKey.Backspace)
+					{
+						if (Console.CursorLeft > cursorInitialPosition)
+						{
+							Console.Write("\b");
+							if (buffer.Length > 0)
+							{
+								buffer.Remove(buffer.Length - 1, 1);
+							}
+						}
+					}
+					else if (info.Key == ConsoleKey.LeftArrow ||
+						info.Key == ConsoleKey.RightArrow ||
+						info.Key == ConsoleKey.UpArrow ||
+						info.Key == ConsoleKey.DownArrow)
+					{
+						Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop);
+					}
+					else if (TextHelper.IsPrintableASCII(info.KeyChar))
+					{
+						buffer.Append(info.KeyChar);
+						Console.Write(info.KeyChar);
+					}
+				}
+			}
+
+			return buffer.ToString();
 		}
 	}
 }

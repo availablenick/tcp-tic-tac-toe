@@ -23,7 +23,7 @@ namespace TicTacToe.ClientSide
 				return 1;
 			}
 
-			string requestMessage = "reqquit";
+			string requestMessage = "reqquit\n";
 			SocketHelper.SendMessage(this._client.PeerSocket,
 				this._client.SendBuffer, requestMessage);
 			this._client.PeerSocket.Close();

@@ -21,7 +21,7 @@ namespace TicTacToe.ClientSide
 		{
 			string username = this.Parameters[0];
 			string password = this.Parameters[1];
-			string requestMessage = $"reqregister {username};{password}";
+			string requestMessage = $"reqregister {username};{password}\n";
 			SocketHelper.SendMessage(this._client.ServerSocket,
 				this._client.SendBuffer, requestMessage);
 			string responseMessage = SocketHelper.ReceiveMessage(

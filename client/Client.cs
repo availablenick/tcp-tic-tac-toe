@@ -1,6 +1,7 @@
 using System;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 
 namespace TicTacToe.ClientSide
 {
@@ -57,9 +58,25 @@ namespace TicTacToe.ClientSide
 			this.ServerSocket.Close();
 		}
 
-		public void UpdateBoard()
+		public void CheckForServerMessage()
 		{
+			if (this.ServerSocket.Available > 0)
+			{
+				string message = SocketHelper.ReceiveMessage(this.ServerSocket,
+					this.ReceiveBuffer);
+				ProcessMessage(message);
+			}
+		}
 
+		private void ProcessMessage(string message)
+		{
+			string[] queuedMessages = MessageHelper.GetQueuedMessagesFrom(message);
+			foreach (string queuedMessage in queuedMessages)
+			{
+				IMessageHandler handler = this.MessageHandlerCreator
+					.CreateHandlerFor(queuedMessage);
+				handler.HandleMessage();
+			}
 		}
 	}
 }

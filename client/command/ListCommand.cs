@@ -18,7 +18,7 @@ namespace TicTacToe.ClientSide
 
 		public override int Execute()
 		{
-			string requestMessage = "reqlist";
+			string requestMessage = "reqlist\n";
 			SocketHelper.SendMessage(this._client.ServerSocket,
 				this._client.SendBuffer, requestMessage);
 			string responseMessage = SocketHelper.ReceiveMessage(

@@ -22,7 +22,7 @@ namespace TicTacToe.ServerSide
 			string[] data = this._data.Split(';');
 			if (data.Length != 2)
 			{
-				return "reslogin 3";
+				return "reslogin 3\n";
 			}
 
 			string username = data[0];
@@ -41,7 +41,7 @@ namespace TicTacToe.ServerSide
 				}
 			}
 
-			return $"reslogin {statusCode}";
+			return $"reslogin {statusCode}\n";
 		}
 
 		private int AuthenticateUser(string username, string password)

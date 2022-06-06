@@ -13,13 +13,9 @@ namespace TicTacToe.ClientSide
 
 		public bool HandleInput()
 		{
+			Action checkForServerMessage = this._client.CheckForServerMessage;
 			Console.Write("> ");
-			string line = Console.ReadLine();
-			if (line == null)
-			{
-				return true;
-			}
-
+			string line = this._client.InputReader.ReadLine(checkForServerMessage);
 			try
 			{
 				Command command = this._client.CommandParser.Parse(line);

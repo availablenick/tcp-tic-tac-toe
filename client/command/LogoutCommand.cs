@@ -18,7 +18,7 @@ namespace TicTacToe.ClientSide
 
 		public override int Execute()
 		{
-			string requestMessage = "reqlogout";
+			string requestMessage = "reqlogout\n";
 			SocketHelper.SendMessage(this._client.ServerSocket,
 				this._client.SendBuffer, requestMessage);
 			string responseMessage = SocketHelper.ReceiveMessage(

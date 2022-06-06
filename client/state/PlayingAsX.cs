@@ -14,15 +14,11 @@ namespace TicTacToe.ClientSide
 		public bool HandleInput()
 		{
 			Console.WriteLine("It is your turn");
+			Action checkForServerMessage = this._client.CheckForServerMessage;
 			while (true)
 			{
 				Console.Write("> ");
-				string line = Console.ReadLine();
-				if (line == null)
-				{
-					return true;
-				}
-
+				string line = this._client.InputReader.ReadLine(checkForServerMessage);
 				try
 				{
 					Command command = this._client.CommandParser.Parse(line);
@@ -41,13 +37,24 @@ namespace TicTacToe.ClientSide
 				}
 			}
 
-			if (this._client.PeerSocket != null)
+			if (this._client.PeerSocket == null)
 			{
-				string peerMessage = SocketHelper.ReceiveMessage(
-					this._client.PeerSocket, this._client.ReceiveBuffer);
-				IMessageHandler handler = this._client.MessageHandlerCreator
-					.CreateHandlerFor(peerMessage);
-				handler.HandleMessage();
+				return false;
+			}
+
+			while (true)
+			{
+				this._client.CheckForServerMessage();
+				if (this._client.PeerSocket.Available > 0)
+				{
+					string peerMessage = SocketHelper.ReceiveMessage(
+						this._client.PeerSocket, this._client.ReceiveBuffer);
+					IMessageHandler handler = this._client.MessageHandlerCreator
+						.CreateHandlerFor(peerMessage);
+					handler.HandleMessage();
+
+					break;
+				}
 			}
 
 			return false;

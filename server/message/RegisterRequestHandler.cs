@@ -21,7 +21,7 @@ namespace TicTacToe.ServerSide
 			string[] data = this._data.Split(';');
 			if (data.Length != 2)
 			{
-				return "resregister 2";
+				return "resregister 2\n";
 			}
 
 			string username = data[0];
@@ -30,7 +30,7 @@ namespace TicTacToe.ServerSide
 			int statusCode = AddUser(username, password);
 			this._mutex.ReleaseMutex();
 
-			return $"resregister {statusCode}";
+			return $"resregister {statusCode}\n";
 		}
 
 		private int AddUser(string username, string password)

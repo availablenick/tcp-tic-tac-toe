@@ -13,26 +13,31 @@ namespace TicTacToe.ClientSide
 
 		public bool HandleInput()
 		{
-			string peerMessage = SocketHelper.ReceiveMessage(
-				this._client.PeerSocket, this._client.ReceiveBuffer);
-			IMessageHandler handler = this._client.MessageHandlerCreator
-				.CreateHandlerFor(peerMessage);
-			handler.HandleMessage();
-			if (this._client.PeerSocket == null)
+			while (true)
 			{
-				return false;
+				this._client.CheckForServerMessage();
+				if (this._client.PeerSocket.Available > 0)
+				{
+					string peerMessage = SocketHelper.ReceiveMessage(
+						this._client.PeerSocket, this._client.ReceiveBuffer);
+					IMessageHandler handler = this._client.MessageHandlerCreator
+						.CreateHandlerFor(peerMessage);
+					handler.HandleMessage();
+					if (this._client.PeerSocket == null)
+					{
+						return false;
+					}
+
+					break;
+				}
 			}
 
 			Console.WriteLine("It is your turn");
+			Action checkForServerMessage = this._client.CheckForServerMessage;
 			while (true)
 			{
 				Console.Write("> ");
-				string line = Console.ReadLine();
-				if (line == null)
-				{
-					return true;
-				}
-
+				string line = this._client.InputReader.ReadLine(checkForServerMessage);
 				try
 				{
 					Command command = this._client.CommandParser.Parse(line);

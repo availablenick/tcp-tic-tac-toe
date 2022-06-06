@@ -21,7 +21,7 @@ namespace TicTacToe.ServerSide
 				usernames.Append($"{username};");
 			}
 
-			return $"reslist {usernames.ToString()} {statusCode}";
+			return $"reslist {usernames.ToString()} {statusCode}\n";
 		}
 	}
 }

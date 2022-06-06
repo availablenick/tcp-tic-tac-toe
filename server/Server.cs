@@ -83,6 +83,13 @@ namespace TicTacToe.ServerSide
 				this.UsernameByEndpoint.ContainsKey(key);
 		}
 
+		public void RemoveConnectedEndpoint(string remoteEndpoint)
+		{
+			this.Mutex.WaitOne();
+			this._connectionHandlerByEndpoint.Remove(remoteEndpoint);
+			this.Mutex.ReleaseMutex();
+		}
+
 		public void NotifyThread(string endpoint, bool shouldReadData)
 		{
 			if (this._connectionHandlerByEndpoint.ContainsKey(endpoint))

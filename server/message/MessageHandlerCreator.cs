@@ -15,7 +15,7 @@ namespace TicTacToe.ServerSide
 
 		public static string[] ParseMessage(string message)
 		{
-			Regex regex = new Regex(@"([\x21-\x80]+)(\s+([\x21-\x80]+))?");
+			Regex regex = new Regex(@"([\x21-\x80]+)(\s+([\x21-\x80]+))?\n$");
 			MatchCollection matches = regex.Matches(message);
 			if (matches.Count > 0) {
 				string messageType = matches[0].Groups[1].Value.ToLower();

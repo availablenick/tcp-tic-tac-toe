@@ -13,14 +13,9 @@ namespace TicTacToe.ClientSide
 
 		public bool HandleInput()
 		{
-			Func<bool> didReceiveServerMessage = DidReceiveServerMessage;
+			Action checkForServerMessage = this._client.CheckForServerMessage;
 			Console.Write("> ");
-			string line = this._client.InputReader.ReadLine(didReceiveServerMessage);			
-			if (line == null)
-			{
-				return false;
-			}
-
+			string line = this._client.InputReader.ReadLine(checkForServerMessage);
 			try
 			{
 				Command command = this._client.CommandParser.Parse(line);
@@ -32,22 +27,6 @@ namespace TicTacToe.ClientSide
 			catch (InvalidCommandException exception)
 			{
 				Console.WriteLine(exception.Message);
-			}
-
-			return false;
-		}
-
-		private bool DidReceiveServerMessage()
-		{
-			if (this._client.ServerSocket.Available > 0)
-			{
-				string serverMessage = SocketHelper.ReceiveMessage(
-					this._client.ServerSocket, this._client.ReceiveBuffer);
-				IMessageHandler handler = this._client.MessageHandlerCreator
-					.CreateHandlerFor(serverMessage);
-				handler.HandleMessage();
-
-				return true;
 			}
 
 			return false;

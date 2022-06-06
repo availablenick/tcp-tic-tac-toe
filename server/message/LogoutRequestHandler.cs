@@ -24,7 +24,7 @@ namespace TicTacToe.ServerSide
 				this._server.RemoveOnlineUser(remoteEndpoint);
 			}
 
-			return $"reslogout {statusCode}";
+			return $"reslogout {statusCode}\n";
 		}
 	}
 }

@@ -20,10 +20,10 @@ namespace TicTacToe.ServerSide
 			string invitedUserUsername = this._data;
 			if (invitedUserUsername == GetInvitingUserUsername())
 			{
-				return $"resinvite {invitedUserUsername} 5";
+				return $"resinvite {invitedUserUsername} 5\n";
 			}
 
-			string responseMessage = $"resinvite {invitedUserUsername} 1";
+			string responseMessage = $"resinvite {invitedUserUsername} 1\n";
 			if (this._connectionHandler.Server.UserIsOnline(invitedUserUsername))
 			{
 				Socket invitedUserSocket = GetInvitedUserSocket(invitedUserUsername);
@@ -37,7 +37,7 @@ namespace TicTacToe.ServerSide
 					if (stopwatch.Elapsed.Seconds >= 5)
 					{
 						stopwatch.Stop();
-						responseMessage = $"resinvite {invitedUserUsername} 4";
+						responseMessage = $"resinvite {invitedUserUsername} 4\n";
 						break;
 					}
 
@@ -59,7 +59,7 @@ namespace TicTacToe.ServerSide
 		private void AskInvitedUser(Socket invitedUserSocket)
 		{
 			string invitingUserUsername = GetInvitingUserUsername();
-			string invitationMessage = $"reqinvite {invitingUserUsername}";
+			string invitationMessage = $"reqinvite {invitingUserUsername}\n";
 			SocketHelper.SendMessage(invitedUserSocket,
 				this._connectionHandler.SendBuffer, invitationMessage);
 		}
@@ -94,20 +94,20 @@ namespace TicTacToe.ServerSide
 					}
 					catch (FormatException)
 					{
-						return "resinvite 0;0 3";
+						return "resinvite 0;0 3\n";
 					}
 
 					if (invitedUserListeningPort == 0)
 					{
-						return $"resinvite {invitedUserUsername} 2";
+						return $"resinvite {invitedUserUsername} 2\n";
 					}
 
 					string invitedUserIPAddress = invitedUserEndpoint.Split(":")[0];
-					return $"resinvite {invitedUserUsername};{invitedUserIPAddress};{invitedUserListeningPort} 0";
+					return $"resinvite {invitedUserUsername};{invitedUserIPAddress};{invitedUserListeningPort} 0\n";
 				}
 			}
 
-			return "resinvite 0;0 3";
+			return "resinvite 0;0 3\n";
 		}
 	}
 }
