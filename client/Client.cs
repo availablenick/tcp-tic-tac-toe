@@ -27,7 +27,7 @@ namespace TicTacToe.ClientSide
 			if (this.ServerSocket == null)
 			{
 				Console.WriteLine("Could not connect to specified host");
-				return;
+				Environment.Exit(0);
 			}
 
 			Console.WriteLine("Connection established");
