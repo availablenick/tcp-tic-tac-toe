@@ -16,25 +16,18 @@ namespace TicTacToe.ClientSide
 			Action checkForServerMessage = this._client.CheckForServerMessage;
 			Console.Write("> ");
 			string line = this._client.InputReader.ReadLine(checkForServerMessage);
-			try
-			{
-				Command command = this._client.CommandParser.Parse(line);
-				if (command != null)
-				{
-					ExecuteCommand(command);
-				}
-			}
-			catch (InvalidCommandException exception)
-			{
-				Console.WriteLine(exception.Message);
-			}
-
+			Command command = this._client.CommandParser.Parse(line);
+			ExecuteCommand(command);
 			return false;
 		}
 
 		private void ExecuteCommand(Command command)
 		{
 			if (command is ExitCommand)
+			{
+				command.Execute();
+			}
+			else if (command is InvalidCommand)
 			{
 				command.Execute();
 			}

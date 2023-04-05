@@ -19,21 +19,11 @@ namespace TicTacToe.ClientSide
 			{
 				Console.Write("> ");
 				string line = this._client.InputReader.ReadLine(checkForServerMessage);
-				try
+				Command command = this._client.CommandParser.Parse(line);
+				int result = ExecuteCommand(command);
+				if (result == 0)
 				{
-					Command command = this._client.CommandParser.Parse(line);
-					if (command != null)
-					{
-						int result = ExecuteCommand(command);
-						if (result == 0)
-						{
-							break;
-						}
-					}
-				}
-				catch (InvalidCommandException exception)
-				{
-					Console.WriteLine(exception.Message);
+					break;
 				}
 			}
 
@@ -66,6 +56,10 @@ namespace TicTacToe.ClientSide
 			{
 				Console.WriteLine("You must either quit or finish your match first");
 				return 1;
+			}
+			else if (command is InvalidCommand)
+			{
+				return command.Execute();
 			}
 			else if (command is InviteCommand)
 			{

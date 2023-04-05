@@ -30,8 +30,7 @@ namespace TicTacToe.ClientSide
 								this._client);
 						}
 
-						throw new InvalidCommandException(
-							ExitCommand.WrongNumberOfParametersMessage);
+						return new InvalidCommand(ExitCommand.WrongNumberOfParametersMessage);
 
 					case "invite":
 						if (HasCorrectNumberOfParameters(
@@ -42,8 +41,7 @@ namespace TicTacToe.ClientSide
 								this._client);
 						}
 
-						throw new InvalidCommandException(
-							InviteCommand.WrongNumberOfParametersMessage);
+						return new InvalidCommand(InviteCommand.WrongNumberOfParametersMessage);
 
 					case "list":
 						if (HasCorrectNumberOfParameters(
@@ -54,8 +52,7 @@ namespace TicTacToe.ClientSide
 								this._client);
 						}
 
-						throw new InvalidCommandException(
-							ListCommand.WrongNumberOfParametersMessage);
+						return new InvalidCommand(ListCommand.WrongNumberOfParametersMessage);
 
 					case "login":
 						if (HasCorrectNumberOfParameters(
@@ -66,8 +63,7 @@ namespace TicTacToe.ClientSide
 								this._client);
 						}
 
-						throw new InvalidCommandException(
-							LoginCommand.WrongNumberOfParametersMessage);
+						return new InvalidCommand(LoginCommand.WrongNumberOfParametersMessage);
 
 					case "logout":
 						if (HasCorrectNumberOfParameters(
@@ -78,8 +74,7 @@ namespace TicTacToe.ClientSide
 								this._client);
 						}
 
-						throw new InvalidCommandException(
-							LogoutCommand.WrongNumberOfParametersMessage);
+						return new InvalidCommand(LogoutCommand.WrongNumberOfParametersMessage);
 
 					case "quit":
 						if (HasCorrectNumberOfParameters(
@@ -90,8 +85,7 @@ namespace TicTacToe.ClientSide
 								this._client);
 						}
 
-						throw new InvalidCommandException(
-							QuitCommand.WrongNumberOfParametersMessage);
+						return new InvalidCommand(QuitCommand.WrongNumberOfParametersMessage);
 
 					case "register":
 						if (HasCorrectNumberOfParameters(
@@ -102,8 +96,7 @@ namespace TicTacToe.ClientSide
 								this._client);
 						}
 
-						throw new InvalidCommandException(
-							RegisterCommand.WrongNumberOfParametersMessage);
+						return new InvalidCommand(RegisterCommand.WrongNumberOfParametersMessage);
 
 					case "send":
 						if (HasCorrectNumberOfParameters(
@@ -114,15 +107,14 @@ namespace TicTacToe.ClientSide
 								this._client);
 						}
 
-						throw new InvalidCommandException(
-							SendCommand.WrongNumberOfParametersMessage);
+						return new InvalidCommand(SendCommand.WrongNumberOfParametersMessage);
 
 					default:
-						throw new InvalidCommandException($"Command \"{command}\" not recognized");
+						return new InvalidCommand($"Command \"{command}\" not recognized");
 				}
 			}
 
-			return null;
+			return new InvalidCommand("");
 		}
 
 		private bool HasCorrectNumberOfParameters(
