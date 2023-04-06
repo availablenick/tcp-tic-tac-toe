@@ -4,6 +4,6 @@ namespace TicTacToe.ClientSide
 {
 	public interface IMessageHandler
 	{
-		public int HandleMessage();
+		void HandleMessage();
 	}
 }

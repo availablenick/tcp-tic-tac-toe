@@ -17,7 +17,7 @@ namespace TicTacToe.ClientSide
 			this._client = client;
 		}
 
-		public override int Execute()
+		public override void Execute()
 		{
 			string username = this.Parameters[0];
 			string password = this.Parameters[1];
@@ -27,14 +27,9 @@ namespace TicTacToe.ClientSide
 			string responseMessage = SocketHelper.ReceiveMessage(
 				this._client.ServerSocket, this._client.ReceiveBuffer);
 			IMessageHandler handler = this._client.MessageHandlerCreator.CreateHandlerFor(
-				responseMessage);;
-			int result = handler.HandleMessage();
-			if (result == 0)
-			{
-				this._client.UserState = new LoggedIn(this._client);
-			}
-
-			return result;
+				responseMessage);
+			handler.HandleMessage();
+			this._client.UserState = new LoggedIn(this._client);
 		}
 	}
 }

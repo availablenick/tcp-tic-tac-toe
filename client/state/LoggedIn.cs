@@ -17,7 +17,16 @@ namespace TicTacToe.ClientSide
 			Console.Write("> ");
 			string line = this._client.InputReader.ReadLine(checkForServerMessage);
 			Command command = this._client.CommandParser.Parse(line);
-			ExecuteCommand(command);
+
+			try
+			{
+				ExecuteCommand(command);
+			}
+			catch (CommandFailedException exception)
+			{
+				Console.WriteLine(exception.Message);
+			}
+
 			return false;
 		}
 
@@ -41,7 +50,7 @@ namespace TicTacToe.ClientSide
 			}
 			else if (command is LoginCommand)
 			{
-				Console.WriteLine("You are already logged in");
+				throw new CommandFailedException("You are already logged in");
 			}
 			else if (command is LogoutCommand)
 			{
@@ -49,15 +58,15 @@ namespace TicTacToe.ClientSide
 			}
 			else if (command is QuitCommand)
 			{
-				Console.WriteLine("You are not in a match");
+				throw new CommandFailedException("You are not in a match");
 			}
 			else if (command is RegisterCommand)
 			{
-				Console.WriteLine("You need to log out first");
+				throw new CommandFailedException("You need to log out first");
 			}
 			else if (command is SendCommand)
 			{
-				Console.WriteLine("You are not in a match");
+				throw new CommandFailedException("You are not in a match");
 			}
 		}
 	}

@@ -16,7 +16,7 @@ namespace TicTacToe.ClientSide
 			this._client = client;
 		}
 
-		public override int Execute()
+		public override void Execute()
 		{
 			string requestMessage = "reqlist\n";
 			SocketHelper.SendMessage(this._client.ServerSocket,
@@ -25,9 +25,7 @@ namespace TicTacToe.ClientSide
 				this._client.ServerSocket, this._client.ReceiveBuffer);
 			IMessageHandler handler = this._client.MessageHandlerCreator.CreateHandlerFor(
 				responseMessage);
-			int result = handler.HandleMessage();
-
-			return result;
+			handler.HandleMessage();
 		}
 	}
 }

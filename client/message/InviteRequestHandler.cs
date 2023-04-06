@@ -23,7 +23,7 @@ namespace TicTacToe.ClientSide
 			return this._stopwatch.Elapsed.Seconds >= 5;
 		}
 
-		public int HandleMessage()
+		public void HandleMessage()
 		{
 			string username = this._data;
 			Console.Write($"\n{username} is inviting you for a match. Do you accept? [y/n] ");
@@ -37,7 +37,7 @@ namespace TicTacToe.ClientSide
 			if (answer == "")
 			{
 				Console.WriteLine("\nYou took too long to reply");
-				return 1;
+				return;
 			}
 
 			if (answer.ToLower() == "y")
@@ -47,7 +47,7 @@ namespace TicTacToe.ClientSide
 				{
 					SocketHelper.SendMessage(this._client.ServerSocket,
 						this._client.SendBuffer, $"resinvite 0\n");
-					return 1;
+					return;
 				}
 
 				int assignedPort = ((IPEndPoint) this._client.ListeningSocket.LocalEndPoint).Port;
@@ -65,8 +65,6 @@ namespace TicTacToe.ClientSide
 				SocketHelper.SendMessage(this._client.ServerSocket,
 					this._client.SendBuffer, "resinvite 0\n");
 			}
-
-			return 0;
 		}
 	}
 }

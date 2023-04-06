@@ -16,62 +16,79 @@ namespace TicTacToe.ClientSide
 			this._client = client;
 		}
 
-		public override int Execute()
+		public override void Execute()
 		{
-			int row = -1;
-			int column = -1;
-			try
-			{
-				row = Int32.Parse(this.Parameters[0]);
-				column = Int32.Parse(this.Parameters[1]);
-			}
-			catch (FormatException)
-			{
-				Console.WriteLine("Row/column is not a valid number");
-				return 1;
-			}
-
-			int result = this._client.Board.MarkPosition(this._client.Board.MyMark,
-				row, column);
-			if (result != 0)
-			{
-				Console.WriteLine("Specified row/column is out of bounds");
-				return 1;
-			}
-
+			int row = Parse(this.Parameters[0]);
+			int column = Parse(this.Parameters[1]);
+			TryToMarkBoardPosition(row, column);
 			this._client.Board.Print();
 			string requestMessage = $"reqsend {row};{column}\n";
 			SocketHelper.SendMessage(this._client.PeerSocket,
 				this._client.SendBuffer, requestMessage);
 			if (this._client.Board.HasWinner())
 			{
-				char winnerMark = this._client.Board.GetWinnerMark();
-				if (winnerMark == this._client.Board.MyMark)
-				{
-					Console.WriteLine("You win");
-				}
-				else
-				{
-					Console.WriteLine("You lose");
-				}
-
-				this._client.PeerSocket.Close();
-				this._client.PeerSocket = null;
-				if (this._client.ListeningSocket != null)
-				{
-					this._client.ListeningSocket.Close();
-					this._client.ListeningSocket = null;
-				}
-
-				this._client.Board = null;
+				PrintMatchResult();
+				CleanUp();
 				this._client.UserState = new LoggedIn(this._client);
 			}
 			else
 			{
 				Console.WriteLine("Waiting for opponent's move...");
 			}
+		}
 
-			return 0;
+		private int Parse(string text)
+		{
+			int result = -1;
+			try
+			{
+				result = Int32.Parse(text);
+			}
+			catch (FormatException)
+			{
+				throw new CommandFailedException("Row/column is not a valid number");
+			}
+
+			return result;
+		}
+
+		private void TryToMarkBoardPosition(int row, int column)
+		{
+			try
+			{
+				this._client.Board.MarkPosition(this._client.Board.MyMark,
+					row, column);
+			}
+			catch (IndexOutOfRangeException)
+			{
+				throw new CommandFailedException("Specified row/column is out of bounds");
+			}
+		}
+
+		private void PrintMatchResult()
+		{
+			char winnerMark = this._client.Board.GetWinnerMark();
+			if (winnerMark == this._client.Board.MyMark)
+			{
+				Console.WriteLine("You win");
+			}
+			else
+			{
+				Console.WriteLine("You lose");
+			}
+		}
+
+		private void CleanUp()
+		{
+			this._client.PeerSocket.Close();
+			this._client.PeerSocket = null;
+			if (this._client.ListeningSocket != null)
+			{
+				this._client.ListeningSocket.Close();
+				this._client.ListeningSocket = null;
+			}
+
+			this._client.Board = null;
 		}
 	}
 }

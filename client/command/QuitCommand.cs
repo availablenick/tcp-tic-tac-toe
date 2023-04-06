@@ -16,11 +16,11 @@ namespace TicTacToe.ClientSide
 			this._client = client;
 		}
 
-		public override int Execute()
+		public override void Execute()
 		{
 			if (this._client.PeerSocket == null)
 			{
-				return 1;
+				throw new CommandFailedException();
 			}
 
 			string requestMessage = "reqquit\n";
@@ -35,8 +35,6 @@ namespace TicTacToe.ClientSide
 			}
 
 			this._client.UserState = new LoggedIn(this._client);
-
-			return 0;
 		}
 	}
 }

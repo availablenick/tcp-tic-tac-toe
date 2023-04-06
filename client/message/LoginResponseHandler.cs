@@ -11,26 +11,22 @@ namespace TicTacToe.ClientSide
 			this._statusCode = Int32.Parse(statusCode);
 		}
 
-		public int HandleMessage()
+		public void HandleMessage()
 		{
 			switch (this._statusCode)
 			{
 				case 0:
 					Console.WriteLine("Logged in successfully");
-					return 0;
+					break;
 				case 1:
-					Console.WriteLine("Incorrect username or password");
-					return 1;
+					throw new CommandFailedException("Incorrect username or password");
 				case 2:
-					Console.WriteLine("This user is already logged in");
-					return 1;
+					throw new CommandFailedException("This user is already logged in");
 				case 3:
-					Console.WriteLine("Invalid login request format");
-					return 1;
+					throw new CommandFailedException("Invalid login request format");
+				default:
+					throw new CommandFailedException("Application error");
 			}
-
-			Console.WriteLine("Application error");
-			return 1;
 		}
 	}
 }

@@ -11,7 +11,7 @@ namespace TicTacToe.ClientSide
 			this._client = client;
 		}
 
-		public int HandleMessage()
+		public void HandleMessage()
 		{
 			Console.WriteLine("Your opponent quit the match");
 			if (this._client.PeerSocket != null)
@@ -27,8 +27,6 @@ namespace TicTacToe.ClientSide
 			}
 
 			this._client.UserState = new LoggedIn(this._client);
-
-			return 0;
 		}
 	}
 }

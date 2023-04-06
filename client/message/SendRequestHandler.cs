@@ -13,44 +13,55 @@ namespace TicTacToe.ClientSide
 			this._client = client;
 		}
 
-		public int HandleMessage()
+		public void HandleMessage()
 		{
 			string[] data = this._data.Split(';');
 			int row = Int32.Parse(data[0]);
 			int column = Int32.Parse(data[1]);
-			int result = this._client.Board.MarkPosition(this._client.Board.OpponentMark,
-				row, column);
-			if (result == 0)
+			TryToMarkBoardPosition(row, column);
+			this._client.Board.Print();
+			if (this._client.Board.HasWinner())
 			{
-				this._client.Board.Print();
-				if (this._client.Board.HasWinner())
-				{
-					char winnerMark = this._client.Board.GetWinnerMark();
-					if (winnerMark == this._client.Board.MyMark)
-					{
-						Console.WriteLine("You win");
-					}
-					else
-					{
-						Console.WriteLine("You lose");
-					}
+				PrintMatchResult();
+				CleanUp();
+				this._client.UserState = new LoggedIn(this._client);
+			}
+		}
 
-					this._client.PeerSocket.Close();
-					this._client.PeerSocket = null;
-					if (this._client.ListeningSocket != null)
-					{
-						this._client.ListeningSocket.Close();
-						this._client.ListeningSocket = null;
-					}
+		private void TryToMarkBoardPosition(int row, int column)
+		{
+			try
+			{
+				this._client.Board.MarkPosition(this._client.Board.OpponentMark,
+					row, column);
+			}
+			catch (IndexOutOfRangeException) {}
+		}
 
-					this._client.Board = null;
-					this._client.UserState = new LoggedIn(this._client);
-				}
+		private void PrintMatchResult()
+		{
+			char winnerMark = this._client.Board.GetWinnerMark();
+			if (winnerMark == this._client.Board.MyMark)
+			{
+				Console.WriteLine("You win");
+			}
+			else
+			{
+				Console.WriteLine("You lose");
+			}
+		}
 
-				return 0;
+		private void CleanUp()
+		{
+			this._client.PeerSocket.Close();
+			this._client.PeerSocket = null;
+			if (this._client.ListeningSocket != null)
+			{
+				this._client.ListeningSocket.Close();
+				this._client.ListeningSocket = null;
 			}
 
-			return 1;
+			this._client.Board = null;
 		}
 	}
 }

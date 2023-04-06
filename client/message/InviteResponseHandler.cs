@@ -16,7 +16,7 @@ namespace TicTacToe.ClientSide
 			this._client = client;
 		}
 
-		public int HandleMessage()
+		public void HandleMessage()
 		{
 			string username;
 			switch (this._statusCode)
@@ -32,45 +32,38 @@ namespace TicTacToe.ClientSide
 					}
 					catch (FormatException)
 					{
-						return 1;
+						throw new CommandFailedException();
 					}
 
 					this._client.PeerSocket = SocketHelper.CreateConnectionSocket(
 						peerAddress, peerPort);
 					if (this._client.PeerSocket == null)
 					{
-						return 1;
+						throw new CommandFailedException();
 					}
 
 					this._client.PeerSocket.Blocking = false;
 					Console.WriteLine($"You are now in a match with {username}. " +
 						"Your mark is O");
 					Console.WriteLine("Waiting for opponent's move...");
-
-					return 0;
+					break;
 				case 1:
 					username = this._data;
-					Console.WriteLine($"User \"{username}\" is not online");
-					return 1;
+					throw new CommandFailedException($"User \"{username}\" is not online");
 				case 2:
 					username = this._data;
-					Console.WriteLine($"User \"{username}\" declined your invitation");
-					return 1;
+					throw new CommandFailedException($"User \"{username}\" declined your invitation");
 				case 3:
 					username = this._data;
-					Console.WriteLine($"Error while inviting \"{username}\"");
-					return 1;
+					throw new CommandFailedException($"Error while inviting \"{username}\"");
 				case 4:
 					username = this._data;
-					Console.WriteLine($"{username} took too long to reply");
-					return 1;
+					throw new CommandFailedException($"{username} took too long to reply");
 				case 5:
-					Console.WriteLine("You cannot invite yourself");
-					return 1;
+					throw new CommandFailedException("You cannot invite yourself");
+				default:
+					throw new CommandFailedException("Application error");
 			}
-
-			Console.WriteLine("Application error");
-			return 1;
 		}
 	}
 }

@@ -16,7 +16,7 @@ namespace TicTacToe.ClientSide
 			this._client = client;
 		}
 
-		public override int Execute()
+		public override void Execute()
 		{
 			string username = this.Parameters[0];
 			string requestMessage = $"reqinvite {username}\n";
@@ -26,14 +26,9 @@ namespace TicTacToe.ClientSide
 				this._client.ServerSocket, this._client.ReceiveBuffer);
 			IMessageHandler handler = this._client.MessageHandlerCreator.CreateHandlerFor(
 				responseMessage);
-			int result = handler.HandleMessage();
-			if (result == 0)
-			{
-				this._client.UserState = new PlayingAsO(this._client);
-				this._client.Board = new Board((char) 2);
-			}
-
-			return result;
+			handler.HandleMessage();
+			this._client.UserState = new PlayingAsO(this._client);
+			this._client.Board = new Board((char) 2);
 		}
 	}
 }

@@ -15,15 +15,13 @@ namespace TicTacToe.ClientSide
 			this._client = client;
 		}
 
-		public override int Execute()
+		public override void Execute()
 		{
 			string requestMessage = "reqexit\n";
 			SocketHelper.SendMessage(this._client.ServerSocket,
 				this._client.SendBuffer, requestMessage);
 			this._client.ServerSocket.Close();
 			Environment.Exit(0);
-
-			return 0;
 		}
 	}
 }

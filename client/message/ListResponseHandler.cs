@@ -13,7 +13,7 @@ namespace TicTacToe.ClientSide
 			this._statusCode = Int32.Parse(statusCode);
 		}
 
-		public int HandleMessage()
+		public void HandleMessage()
 		{
 			switch (this._statusCode)
 			{
@@ -24,11 +24,10 @@ namespace TicTacToe.ClientSide
 						Console.WriteLine(username);
 					}
 
-					return 0;
+					break;
+				default:
+					throw new CommandFailedException("Application error");
 			}
-
-			Console.WriteLine("Application error");
-			return 1;
 		}
 	}
 }

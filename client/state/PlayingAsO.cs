@@ -39,62 +39,59 @@ namespace TicTacToe.ClientSide
 				Console.Write("> ");
 				string line = this._client.InputReader.ReadLine(checkForServerMessage);
 				Command command = this._client.CommandParser.Parse(line);
-				int result = ExecuteCommand(command);
-				if (result == 0)
+
+				try
 				{
+					ExecuteCommand(command);
 					break;
+				}
+				catch (CommandFailedException exception)
+				{
+					Console.WriteLine(exception.Message);
 				}
 			}
 
 			return false;
 		}
 
-		private int ExecuteCommand(Command command)
+		private void ExecuteCommand(Command command)
 		{
 			if (command is ExitCommand)
 			{
-				Console.WriteLine("You must either quit or finish your match first");
-				return 1;
+				throw new CommandFailedException("You must either quit or finish your match first");
 			}
 			else if (command is InvalidCommand)
 			{
-				return command.Execute();
+				command.Execute();
 			}
 			else if (command is InviteCommand)
 			{
-				Console.WriteLine("You cannot invite another player during a match");
-				return 1;
+				throw new CommandFailedException("You cannot invite another player during a match");
 			}
 			else if (command is ListCommand)
 			{
-				Console.WriteLine("You cannot access the online user list during a match");
-				return 1;
+				throw new CommandFailedException("You cannot access the online user list during a match");
 			}
 			else if (command is LoginCommand)
 			{
-				Console.WriteLine("You are already logged in");
-				return 1;
+				throw new CommandFailedException("You are already logged in");
 			}
 			else if (command is LogoutCommand)
 			{
-				Console.WriteLine("You cannot log out during a match");
-				return 1;
+				throw new CommandFailedException("You cannot log out during a match");
 			}
 			else if (command is QuitCommand)
 			{
-				return command.Execute();
+				command.Execute();
 			}
 			else if (command is RegisterCommand)
 			{
-				Console.WriteLine("You cannot register during a match");
-				return 1;
+				throw new CommandFailedException("You cannot register during a match");
 			}
 			else if (command is SendCommand)
 			{
-				return command.Execute();
+				command.Execute();
 			}
-
-			return 1;
 		}
 	}
 }

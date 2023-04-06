@@ -16,7 +16,7 @@ namespace TicTacToe.ClientSide
 			this._client = client;
 		}
 
-		public override int Execute()
+		public override void Execute()
 		{
 			string requestMessage = "reqlogout\n";
 			SocketHelper.SendMessage(this._client.ServerSocket,
@@ -25,13 +25,8 @@ namespace TicTacToe.ClientSide
 				this._client.ServerSocket, this._client.ReceiveBuffer);
 			IMessageHandler handler = this._client.MessageHandlerCreator.CreateHandlerFor(
 				responseMessage);
-			int result = handler.HandleMessage();
-			if (result == 0)
-			{
-				this._client.UserState = new LoggedOut(this._client);
-			}
-			
-			return result;
+			handler.HandleMessage();
+			this._client.UserState = new LoggedOut(this._client);
 		}
 	}
 }

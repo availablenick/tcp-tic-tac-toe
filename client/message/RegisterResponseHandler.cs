@@ -11,23 +11,20 @@ namespace TicTacToe.ClientSide
 			this._statusCode = Int32.Parse(statusCode);
 		}
 
-		public int HandleMessage()
+		public void HandleMessage()
 		{
 			switch (this._statusCode)
 			{
 				case 0:
 					Console.WriteLine("Registered successfully");
-					return 0;
+					break;
 				case 1:
-					Console.WriteLine("Username already exists");
-					return 1;
+					throw new CommandFailedException("Username already exists");
 				case 2:
-					Console.WriteLine("Invalid register request format");
-					return 1;
+					throw new CommandFailedException("Invalid register request format");
+				default:
+					throw new CommandFailedException("Application error");
 			}
-
-			Console.WriteLine("Application error");
-			return 1;
 		}
 	}
 }

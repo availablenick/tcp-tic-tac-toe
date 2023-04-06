@@ -11,20 +11,18 @@ namespace TicTacToe.ClientSide
 			this._statusCode = Int32.Parse(statusCode);
 		}
 
-		public int HandleMessage()
+		public void HandleMessage()
 		{
 			switch (this._statusCode)
 			{
 				case 0:
 					Console.WriteLine("You are no longer logged in");
-					return 0;
+					break;
 				case 1:
-					Console.WriteLine("You are not logged in");
-					return 1;
+					throw new CommandFailedException("You are not logged in");
+				default:
+					throw new CommandFailedException("Application error");
 			}
-
-			Console.WriteLine("Application error");
-			return 1;
 		}
 	}
 }

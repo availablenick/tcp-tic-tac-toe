@@ -11,19 +11,14 @@ namespace TicTacToe.ClientSide
 			this._client = client;
 		}
 
-		public int HandleMessage()
+		public void HandleMessage()
 		{
 			try
 			{
 				SocketHelper.SendMessage(this._client.ServerSocket,
 					this._client.SendBuffer, "resping\n");
 			}
-			catch (SocketException)
-			{
-				return 1;
-			}
-
-			return 0;
+			catch (SocketException) {}
 		}
 	}
 }

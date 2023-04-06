@@ -24,16 +24,15 @@ namespace TicTacToe.ClientSide
 			}
 		}
 
-		public int MarkPosition(char mark, int row, int column)
+		public void MarkPosition(char mark, int row, int column)
 		{
-			if (IsWithinBounds(row, column))
+			if (!IsWithinBounds(row, column))
 			{
-				int index = 3 * row + column;
-				this._board[index] = mark;
-				return 0;
+				throw new IndexOutOfRangeException("Position is out of bounds");
 			}
 
-			return 1;			
+			int index = 3 * row + column;
+			this._board[index] = mark;
 		}
 
 		public void Print()

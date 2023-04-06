@@ -4,10 +4,9 @@ namespace TicTacToe.ClientSide
 {
 	public class InvalidResponseHandler : IMessageHandler
 	{
-		public int HandleMessage()
+		public void HandleMessage()
 		{
-			Console.WriteLine("Received an invalid response from server");
-			return 1;
+			throw new CommandFailedException("Received an invalid response from server");
 		}
 	}
 }

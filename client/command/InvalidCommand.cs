@@ -10,10 +10,9 @@ namespace TicTacToe.ClientSide
 			this._message = message;
 		}
 
-		public override int Execute()
+		public override void Execute()
 		{
-      Console.WriteLine(this._message);
-			return 0;
+      throw new CommandFailedException(this._message);
 		}
 	}
 }
