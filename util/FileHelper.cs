@@ -5,38 +5,20 @@ namespace TicTacToe
 {
 	public class FileHelper
 	{
-		public static int CreateUserDataFile()
+		public static void CreateUserDataFile()
 		{
 			string dataDirectory = $"{Directory.GetCurrentDirectory()}/data";
 			if (!Directory.Exists(dataDirectory))
 			{
-				try
-				{
-					Directory.CreateDirectory(dataDirectory);
-				}
-				catch (UnauthorizedAccessException)
-				{
-					Console.WriteLine("Could not create data directory: insufficient permissions");
-					return 1;
-				}
+				Directory.CreateDirectory(dataDirectory);
 			}
 
-			if (!File.Exists($"{dataDirectory}/users"))
+			string filepath = $"{dataDirectory}/users";
+			if (!File.Exists(filepath))
 			{
-				try
-				{
-					string filepath = $"{dataDirectory}/users";
-					FileStream stream = File.Create(filepath, 1);
-					stream.Close();
-				}
-				catch (UnauthorizedAccessException)
-				{
-					Console.WriteLine("Could not create user account file: insufficient permissions");
-					return 1;
-				}
+				FileStream stream = File.Create(filepath, 1);
+				stream.Close();
 			}
-
-			return 0;
 		}
 	}
 }

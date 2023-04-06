@@ -24,7 +24,7 @@ namespace TicTacToe.ServerSide
 			if (this._listeningSocket == null)
 			{
 				Console.WriteLine("Could not create listening socket");
-				return;
+				Environment.Exit(0);
 			}
 
 			this._connectionHandlerByEndpoint = new Dictionary<string, ConnectionHandler>();
@@ -33,13 +33,20 @@ namespace TicTacToe.ServerSide
 			this.EndpointByUsername = new Dictionary<string, string>();
 			this.Mutex = new Mutex();
 
-			int statusCode = FileHelper.CreateUserDataFile();
-			if (statusCode != 0)
-			{
-				return;
-			}
+			TryToCreateUserDataFile();
+		}
 
-			Console.WriteLine("Done");
+		private void TryToCreateUserDataFile()
+		{
+			try
+			{
+				FileHelper.CreateUserDataFile();
+			}
+			catch (UnauthorizedAccessException exception)
+			{
+				Console.WriteLine(exception.Message);
+				Environment.Exit(0);
+			}
 		}
 
 		public void WaitConnection()
