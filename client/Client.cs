@@ -17,6 +17,7 @@ namespace TicTacToe.ClientSide
 		public IUserState UserState { get; set; }
 		public InputReader InputReader { get; }
 		public Board Board { get; set; }
+		public bool IsConnected { get; set; }
 
 		public Client(string serverAddress, int serverPort)
 		{
@@ -41,17 +42,14 @@ namespace TicTacToe.ClientSide
 			this.UserState = new LoggedOut(this);
 			this.InputReader = new InputReader();
 			this.Board = null;
+			this.IsConnected = true;
 		}
 
 		public void HandleInput()
 		{
-			while (true)
+			while (this.IsConnected)
 			{
-				bool shouldStopHandlingInput = this.UserState.HandleInput();
-				if (shouldStopHandlingInput)
-				{
-					break;
-				}
+				this.UserState.HandleInput();
 			}
 
 			Console.WriteLine("End");

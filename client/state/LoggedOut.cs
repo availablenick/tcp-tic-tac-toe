@@ -11,7 +11,7 @@ namespace TicTacToe.ClientSide
 			this._client = client;
 		}
 
-		public bool HandleInput()
+		public void HandleInput()
 		{
 			Action checkForServerMessage = this._client.CheckForServerMessage;
 			Console.Write("> ");
@@ -26,8 +26,6 @@ namespace TicTacToe.ClientSide
 			{
 				Console.WriteLine(exception.Message);
 			}
-
-			return false;
 		}
 
 		private void ExecuteCommand(Command command)

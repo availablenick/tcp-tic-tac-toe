@@ -20,8 +20,7 @@ namespace TicTacToe.ClientSide
 			string requestMessage = "reqexit\n";
 			SocketHelper.SendMessage(this._client.ServerSocket,
 				this._client.SendBuffer, requestMessage);
-			this._client.ServerSocket.Close();
-			Environment.Exit(0);
+			this._client.IsConnected = false;
 		}
 	}
 }

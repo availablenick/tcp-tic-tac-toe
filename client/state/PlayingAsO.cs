@@ -11,7 +11,7 @@ namespace TicTacToe.ClientSide
 			this._client = client;
 		}
 
-		public bool HandleInput()
+		public void HandleInput()
 		{
 			while (true)
 			{
@@ -25,7 +25,7 @@ namespace TicTacToe.ClientSide
 					handler.HandleMessage();
 					if (this._client.PeerSocket == null)
 					{
-						return false;
+						return;
 					}
 
 					break;
@@ -50,8 +50,6 @@ namespace TicTacToe.ClientSide
 					Console.WriteLine(exception.Message);
 				}
 			}
-
-			return false;
 		}
 
 		private void ExecuteCommand(Command command)

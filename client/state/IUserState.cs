@@ -4,6 +4,6 @@ namespace TicTacToe.ClientSide
 {
 	public interface IUserState
 	{
-		public bool HandleInput();
+		void HandleInput();
 	}
 }
