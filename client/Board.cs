@@ -28,10 +28,16 @@ namespace TicTacToe.ClientSide
 		{
 			if (!IsWithinBounds(row, column))
 			{
-				throw new IndexOutOfRangeException("Position is out of bounds");
+				throw new InvalidBoardPositionException("Specified row/column is out of bounds");
 			}
 
 			int index = 3 * row + column;
+			bool positionIsAvailable = this._board[index] == 0;
+			if (!positionIsAvailable)
+			{
+				throw new InvalidBoardPositionException("Specified position is already marked");
+			}
+
 			this._board[index] = mark;
 		}
 

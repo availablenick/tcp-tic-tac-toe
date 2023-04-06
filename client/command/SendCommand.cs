@@ -59,9 +59,9 @@ namespace TicTacToe.ClientSide
 				this._client.Board.MarkPosition(this._client.Board.MyMark,
 					row, column);
 			}
-			catch (IndexOutOfRangeException)
+			catch (InvalidBoardPositionException exception)
 			{
-				throw new CommandFailedException("Specified row/column is out of bounds");
+				throw new CommandFailedException(exception.Message);
 			}
 		}
 

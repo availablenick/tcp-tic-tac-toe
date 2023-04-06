@@ -35,7 +35,7 @@ namespace TicTacToe.ClientSide
 				this._client.Board.MarkPosition(this._client.Board.OpponentMark,
 					row, column);
 			}
-			catch (IndexOutOfRangeException) {}
+			catch (InvalidBoardPositionException) {}
 		}
 
 		private void PrintMatchResult()
