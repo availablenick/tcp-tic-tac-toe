@@ -59,10 +59,6 @@ namespace TicTacToe.ClientSide
 			{
 				throw new CommandFailedException("You must either quit or finish your match first");
 			}
-			else if (command is InvalidCommand)
-			{
-				command.Execute();
-			}
 			else if (command is InviteCommand)
 			{
 				throw new CommandFailedException("You cannot invite another player during a match");
@@ -79,18 +75,12 @@ namespace TicTacToe.ClientSide
 			{
 				throw new CommandFailedException("You cannot log out during a match");
 			}
-			else if (command is QuitCommand)
-			{
-				command.Execute();
-			}
 			else if (command is RegisterCommand)
 			{
 				throw new CommandFailedException("You cannot register during a match");
 			}
-			else if (command is SendCommand)
-			{
-				command.Execute();
-			}
+
+			command.Execute();
 		}
 	}
 }

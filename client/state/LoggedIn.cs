@@ -30,29 +30,9 @@ namespace TicTacToe.ClientSide
 
 		private void ExecuteCommand(Command command)
 		{
-			if (command is ExitCommand)
-			{
-				command.Execute();
-			}
-			else if (command is InvalidCommand)
-			{
-				command.Execute();
-			}
-			else if (command is InviteCommand)
-			{
-				command.Execute();
-			}
-			else if (command is ListCommand)
-			{
-				command.Execute();
-			}
-			else if (command is LoginCommand)
+			if (command is LoginCommand)
 			{
 				throw new CommandFailedException("You are already logged in");
-			}
-			else if (command is LogoutCommand)
-			{
-				command.Execute();
 			}
 			else if (command is QuitCommand)
 			{
@@ -66,6 +46,8 @@ namespace TicTacToe.ClientSide
 			{
 				throw new CommandFailedException("You are not in a match");
 			}
+
+			command.Execute();
 		}
 	}
 }
