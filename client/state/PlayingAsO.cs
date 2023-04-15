@@ -37,7 +37,7 @@ namespace TicTacToe.ClientSide
 			while (true)
 			{
 				Console.Write("> ");
-				string line = this._client.InputReader.ReadLine(checkForServerMessage);
+				string line = InputReader.GetInstance().ReadLine(checkForServerMessage);
 				Command command = this._client.CommandParser.Parse(line);
 
 				try

@@ -7,64 +7,83 @@ namespace TicTacToe.ClientSide
 {
 	public class InviteRequestHandler : IMessageHandler
 	{
-		private string _data;
+		private string _invitingUsername;
 		private Client _client;
 		private Stopwatch _stopwatch;
 
-		public InviteRequestHandler(string data, Client client)
+		public InviteRequestHandler(string invitingUsername, Client client)
 		{
-			this._data = data;
+			this._invitingUsername = invitingUsername;
 			this._client = client;
 			this._stopwatch = new Stopwatch();
 		}
 
-		private bool IsTimeForReplyUp()
-		{
-			return this._stopwatch.Elapsed.Seconds >= 5;
-		}
-
 		public void HandleMessage()
 		{
-			string username = this._data;
-			Console.Write($"\n{username} is inviting you for a match. Do you accept? [y/n] ");
-			Func<bool> isTimeForReplyUp = IsTimeForReplyUp;
+			Console.Write($"\n{this._invitingUsername} is inviting you for a match. Do you accept? [y/n] ");
 			this._stopwatch.Start();
-			string answer = InputReader.ReadLine(isTimeForReplyUp);
+			string answer = InputReader.GetInstance().ReadLine(ManageReplyTime);
 			this._stopwatch.Stop();
-			this._client.InputReader.Reset();
-			this._client.InputReader.ShouldRead = false;
+			InputReader.GetInstance().DiscardInput();
 
 			if (answer == "")
 			{
 				Console.WriteLine("\nYou took too long to reply");
-				return;
 			}
-
-			if (answer.ToLower() == "y")
+			else if (answer.ToLower() == "y")
 			{
-				this._client.ListeningSocket = SocketHelper.CreateListeningSocket(0);
-				if (this._client.ListeningSocket == null)
-				{
-					SocketHelper.SendMessage(this._client.ServerSocket,
-						this._client.SendBuffer, $"resinvite 0\n");
-					return;
-				}
-
-				int assignedPort = ((IPEndPoint) this._client.ListeningSocket.LocalEndPoint).Port;
-				SocketHelper.SendMessage(this._client.ServerSocket,
-					this._client.SendBuffer, $"resinvite {assignedPort}\n");
-				this._client.PeerSocket = this._client.ListeningSocket.Accept();
-				this._client.PeerSocket.Blocking = false;
-				this._client.UserState = new PlayingAsX(this._client);
-				this._client.Board = new Board((char) 1);
-				Console.WriteLine($"You are now in a match with {username}. " +
-					"Your mark is X");
+				SetUpP2PCommunication();
 			}
 			else
 			{
 				SocketHelper.SendMessage(this._client.ServerSocket,
 					this._client.SendBuffer, "resinvite 0\n");
 			}
+		}
+
+		private void ManageReplyTime()
+		{
+			bool timeForReplyIsUp = this._stopwatch.Elapsed.Seconds >= 5;
+			if (timeForReplyIsUp)
+			{
+				InputReader.GetInstance().IsReading = false;
+			}
+		}
+
+		private void SetUpP2PCommunication()
+		{
+			try
+			{
+				SetUpListeningSocket();
+				SetUpPeerSocket();
+				this._client.UserState = new PlayingAsX(this._client);
+				this._client.Board = new Board((char) 1);
+				Console.WriteLine(
+					$"You are now in a match with {this._invitingUsername}. Your mark is X");
+			}
+			catch (SocketException)
+			{
+				SocketHelper.SendMessage(this._client.ServerSocket,
+					this._client.SendBuffer, $"resinvite 0\n");
+			}
+		}
+
+		private void SetUpListeningSocket()
+		{
+			this._client.ListeningSocket = SocketHelper.CreateListeningSocket(0);
+			if (this._client.ListeningSocket == null)
+			{
+				throw new SocketException();
+			}
+		}
+
+		private void SetUpPeerSocket()
+		{
+			int assignedPort = ((IPEndPoint) this._client.ListeningSocket.LocalEndPoint).Port;
+			SocketHelper.SendMessage(this._client.ServerSocket,
+				this._client.SendBuffer, $"resinvite {assignedPort}\n");
+			this._client.PeerSocket = this._client.ListeningSocket.Accept();
+			this._client.PeerSocket.Blocking = false;
 		}
 	}
 }

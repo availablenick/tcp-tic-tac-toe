@@ -5,112 +5,102 @@ namespace TicTacToe.ClientSide
 {
 	public class InputReader
 	{
+		private static InputReader _instance = null;
 		private StringBuilder _buffer;
-		public bool ShouldRead { get; set; }
+		public bool IsReading { get; set; }
 
-		public InputReader()
+		private InputReader()
 		{
 			this._buffer = new StringBuilder();
-			this.ShouldRead = true;
+			this.IsReading = true;
 		}
 
-		public void Reset()
+		public static InputReader GetInstance()
 		{
-			this._buffer.Clear();
+			if (_instance == null)
+			{
+				_instance = new InputReader();
+			}
+
+			return _instance;
+		}
+
+		public static InputReader Create()
+		{
+			return new InputReader();
 		}
 
 		public string ReadLine(Action somethingToDo)
 		{
-			Reset();
-			this.ShouldRead = true;
+			DiscardInput();
+			this.IsReading = true;
 			int cursorInitialPosition = Console.CursorLeft;
-			while (this.ShouldRead)
+			while (this.IsReading)
 			{
 				somethingToDo();
 				if (Console.KeyAvailable)
 				{
-					ConsoleKeyInfo info = Console.ReadKey(true);
-					if (info.Key == ConsoleKey.Enter)
-					{
-						Console.Write(info.KeyChar);
-						break;
-					}
-					else if (info.Key == ConsoleKey.Backspace)
-					{
-						if (Console.CursorLeft > cursorInitialPosition)
-						{
-							Console.Write("\b");
-							if (this._buffer.Length > 0)
-							{
-								this._buffer.Remove(this._buffer.Length - 1, 1);
-							}
-						}
-					}
-					else if (info.Key == ConsoleKey.LeftArrow ||
-						info.Key == ConsoleKey.RightArrow ||
-						info.Key == ConsoleKey.UpArrow ||
-						info.Key == ConsoleKey.DownArrow)
-					{
-						Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop);
-					}
-					else if (TextHelper.IsPrintableASCII(info.KeyChar))
-					{
-						this._buffer.Append(info.KeyChar);
-						Console.Write(info.KeyChar);
-					}
+					HandleKeyInput(cursorInitialPosition);
 				}
+			}
+
+			bool characterWasAdded = this._buffer.Length > 0;
+			if (characterWasAdded)
+			{
+				Console.WriteLine();
 			}
 
 			return this._buffer.ToString();
 		}
 
-		public static string ReadLine(Func<bool> somethingToDo)
+		public void DiscardInput()
 		{
-			StringBuilder buffer = new StringBuilder();
-			int cursorInitialPosition = Console.CursorLeft;
-			while (true)
+			this._buffer.Clear();
+		}
+
+		private void HandleKeyInput(int cursorInitialPosition)
+		{
+			ConsoleKeyInfo info = Console.ReadKey(true);
+			if (info.Key == ConsoleKey.Enter)
 			{
-				bool shouldStopReading = somethingToDo();
-				if (shouldStopReading)
-				{
-					break;
-				}
-
-				if (Console.KeyAvailable)
-				{
-					ConsoleKeyInfo info = Console.ReadKey(true);
-					if (info.Key == ConsoleKey.Enter)
-					{
-						Console.Write(info.KeyChar);
-						break;
-					}
-					else if (info.Key == ConsoleKey.Backspace)
-					{
-						if (Console.CursorLeft > cursorInitialPosition)
-						{
-							Console.Write("\b");
-							if (buffer.Length > 0)
-							{
-								buffer.Remove(buffer.Length - 1, 1);
-							}
-						}
-					}
-					else if (info.Key == ConsoleKey.LeftArrow ||
-						info.Key == ConsoleKey.RightArrow ||
-						info.Key == ConsoleKey.UpArrow ||
-						info.Key == ConsoleKey.DownArrow)
-					{
-						Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop);
-					}
-					else if (TextHelper.IsPrintableASCII(info.KeyChar))
-					{
-						buffer.Append(info.KeyChar);
-						Console.Write(info.KeyChar);
-					}
-				}
+				this.IsReading = false;
 			}
+			else if (info.Key == ConsoleKey.Backspace)
+			{
+				HandleBackspaceKey(cursorInitialPosition);
+			}
+			else if (CharIsPrintableASCII(info.KeyChar))
+			{
+				AddCharacter(info.KeyChar);
+			}
+		}
 
-			return buffer.ToString();
+		private void HandleBackspaceKey(int cursorInitialPosition)
+		{
+			if (Console.CursorLeft > cursorInitialPosition)
+			{
+				DeleteLastCharacter();
+			}
+		}
+
+		private void DeleteLastCharacter()
+		{
+			Console.Write("\b");
+			if (this._buffer.Length > 0)
+			{
+				this._buffer.Remove(this._buffer.Length - 1, 1);
+			}
+		}
+
+		private bool CharIsPrintableASCII(char character)
+		{
+			return character >= 32 && character <= 126;
+		}
+
+		private void AddCharacter(char character)
+		{
+			this._buffer.Append(character);
+			Console.Write(character);
 		}
 	}
 }

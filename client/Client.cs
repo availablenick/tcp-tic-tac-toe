@@ -15,7 +15,6 @@ namespace TicTacToe.ClientSide
 		public CommandParser CommandParser { get; }
 		public MessageHandlerCreator MessageHandlerCreator { get; }
 		public IUserState UserState { get; set; }
-		public InputReader InputReader { get; }
 		public Board Board { get; set; }
 		public bool IsConnected { get; set; }
 
@@ -40,7 +39,6 @@ namespace TicTacToe.ClientSide
 			this.CommandParser = new CommandParser(this);
 			this.MessageHandlerCreator = new MessageHandlerCreator(this);
 			this.UserState = new LoggedOut(this);
-			this.InputReader = new InputReader();
 			this.Board = null;
 			this.IsConnected = true;
 		}
