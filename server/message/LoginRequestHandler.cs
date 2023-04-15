@@ -33,65 +33,40 @@ namespace TicTacToe.ServerSide
 			}
 			else
 			{
-				statusCode = AuthenticateUser(username, password);
-				if (statusCode == 0)
+				if (CredentialsAreValid(username, password))
 				{
 					string remoteEndpoint = this._clientSocket.RemoteEndPoint.ToString();
 					this._server.AddOnlineUser(username, remoteEndpoint);
+				}
+				else
+				{
+					statusCode = 1;
 				}
 			}
 
 			return $"reslogin {statusCode}\n";
 		}
 
-		private int AuthenticateUser(string username, string password)
+		private bool CredentialsAreValid(string username, string password)
 		{
 			string filepath = $"{Directory.GetCurrentDirectory()}/data/users";
-			using (var stream = File.Open(filepath, FileMode.Open, FileAccess.Read))
+			foreach (string line in File.ReadLines(filepath))
 			{
-				Byte[] line = new Byte[256];
-				int i = 0;
-				int nextByte;
-				while ((nextByte = stream.ReadByte()) != -1)
+				string[] data = line.Split(" ");
+				string entryUsername = data[0];
+				string entryPassword = data[1];
+				if (username == entryUsername)
 				{
-					byte character = (byte) nextByte;
-					if (character == ' ')
+					if (password == entryPassword)
 					{
-						string lineUsername = BufferHelper.GetBufferMessage(line, i);
-						if (username == lineUsername)
-						{
-							i = 0;
-							while (true)
-							{
-								nextByte = stream.ReadByte();
-								character = (byte) nextByte;
-								if (TextHelper.IsLineBreak((char) character))
-								{
-									string linePassword = BufferHelper.GetBufferMessage(line, i);
-									if (password == linePassword)
-									{
-										return 0;
-									}
-									else
-									{
-										return 1;
-									}
-								}
-
-								line[i++] = character;
-							}
-						}
+						return true;
 					}
 
-					line[i++] = character;
-					if (TextHelper.IsLineBreak((char) character))
-					{
-						i = 0;
-					}
+					return false;
 				}
-			
-				return 1;
 			}
+
+			return false;
 		}
 	}
 }
