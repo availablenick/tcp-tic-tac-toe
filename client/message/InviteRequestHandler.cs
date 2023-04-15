@@ -56,7 +56,7 @@ namespace TicTacToe.ClientSide
 			{
 				SetUpListeningSocket();
 				SetUpPeerSocket();
-				this._client.UserState = new PlayingAsX(this._client);
+				this._client.UserState = new Playing(this._client);
 				this._client.Board = new Board((char) 1);
 				Console.WriteLine(
 					$"You are now in a match with {this._invitingUsername}. Your mark is X");

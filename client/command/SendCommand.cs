@@ -33,7 +33,7 @@ namespace TicTacToe.ClientSide
 			}
 			else
 			{
-				Console.WriteLine("Waiting for opponent's move...");
+				this._client.UserState = new Waiting(this._client);
 			}
 		}
 

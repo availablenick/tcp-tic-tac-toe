@@ -27,7 +27,7 @@ namespace TicTacToe.ClientSide
 			IMessageHandler handler = this._client.MessageHandlerCreator.CreateHandlerFor(
 				responseMessage);
 			handler.HandleMessage();
-			this._client.UserState = new PlayingAsO(this._client);
+			this._client.UserState = new Waiting(this._client);
 			this._client.Board = new Board((char) 2);
 		}
 	}

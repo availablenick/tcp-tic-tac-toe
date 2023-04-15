@@ -26,6 +26,10 @@ namespace TicTacToe.ClientSide
 				CleanUp();
 				this._client.UserState = new LoggedIn(this._client);
 			}
+			else
+			{
+				this._client.UserState = new Playing(this._client);
+			}
 		}
 
 		private void TryToMarkBoardPosition(int row, int column)

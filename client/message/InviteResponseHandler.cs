@@ -45,7 +45,6 @@ namespace TicTacToe.ClientSide
 					this._client.PeerSocket.Blocking = false;
 					Console.WriteLine($"You are now in a match with {username}. " +
 						"Your mark is O");
-					Console.WriteLine("Waiting for opponent's move...");
 					break;
 				case 1:
 					username = this._data;

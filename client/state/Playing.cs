@@ -2,54 +2,35 @@ using System;
 
 namespace TicTacToe.ClientSide
 {
-	public class PlayingAsO : IUserState
+	public class Playing : IUserState
 	{
 		private Client _client;
 
-		public PlayingAsO(Client client)
+		public Playing(Client client)
 		{
 			this._client = client;
 		}
 
 		public void HandleInput()
 		{
-			while (true)
-			{
-				this._client.CheckForServerMessage();
-				if (this._client.PeerSocket.Available > 0)
-				{
-					string peerMessage = SocketHelper.ReceiveMessage(
-						this._client.PeerSocket, this._client.ReceiveBuffer);
-					IMessageHandler handler = this._client.MessageHandlerCreator
-						.CreateHandlerFor(peerMessage);
-					handler.HandleMessage();
-					if (this._client.PeerSocket == null)
-					{
-						return;
-					}
-
-					break;
-				}
-			}
-
-			Console.WriteLine("It is your turn");
+      Console.WriteLine("It is your turn");
 			Action checkForServerMessage = this._client.CheckForServerMessage;
-			while (true)
-			{
-				Console.Write("> ");
-				string line = InputReader.GetInstance().ReadLine(checkForServerMessage);
-				Command command = this._client.CommandParser.Parse(line);
+      while (true)
+      {
+        Console.Write("> ");
+        string line = InputReader.GetInstance().ReadLine(checkForServerMessage);
+        Command command = this._client.CommandParser.Parse(line);
 
-				try
-				{
-					ExecuteCommand(command);
-					break;
-				}
-				catch (CommandFailedException exception)
-				{
-					Console.WriteLine(exception.Message);
-				}
-			}
+        try
+        {
+          ExecuteCommand(command);
+          break;
+        }
+        catch (CommandFailedException exception)
+        {
+          Console.WriteLine(exception.Message);
+        }
+      }
 		}
 
 		private void ExecuteCommand(Command command)
