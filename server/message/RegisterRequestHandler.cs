@@ -26,46 +26,45 @@ namespace TicTacToe.ServerSide
 
 			string username = data[0];
 			string password = data[1];
+			string filepath = $"{Directory.GetCurrentDirectory()}/data/users";
+			int statusCode = 0;
 			this._mutex.WaitOne();
-			int statusCode = AddUser(username, password);
-			this._mutex.ReleaseMutex();
 
+			if (UsernameAlreadyExists(filepath, username))
+			{
+				statusCode = 1;
+			}
+			else
+			{
+				AddUserEntry(filepath, username, password);
+			}
+
+			this._mutex.ReleaseMutex();
 			return $"resregister {statusCode}\n";
 		}
 
-		private int AddUser(string username, string password)
+		private bool UsernameAlreadyExists(string filepath, string username)
 		{
-			string filepath = $"{Directory.GetCurrentDirectory()}/data/users";
-			using (var stream = File.Open(filepath, FileMode.Open, FileAccess.ReadWrite))
+			foreach (string line in File.ReadLines(filepath))
 			{
-				Byte[] line = new Byte[256];
-				int i = 0;
-				int nextByte;
-				while ((nextByte = stream.ReadByte()) != -1)
+				string entryUsername = line.Split(" ")[0];
+				if (username == entryUsername)
 				{
-					byte character = (byte) nextByte;
-					if (character == ' ')
-					{
-						string lineUsername = BufferHelper.GetBufferMessage(line, i);
-						if (username == lineUsername)
-						{
-							return 1;
-						}
-					}
-
-					line[i++] = character;
-					if (TextHelper.IsLineBreak((char) character))
-					{
-						i = 0;
-					}
+					return true;
 				}
-
-				Byte[] buffer = new Byte[256];
-				string newLine = $"{username} {password}\n";
-				BufferHelper.WriteMessageToBuffer(buffer, newLine);
-				stream.Write(buffer, 0, newLine.Length);
-				return 0;
 			}
+
+			return false;
+		}
+
+		private void AddUserEntry(string filepath, string username, string password)
+		{
+			using var stream = File.Open(filepath, FileMode.Open, FileAccess.Write);
+			Byte[] buffer = new Byte[256];
+			string newLine = $"{username} {password}\n";
+			BufferHelper.WriteMessageToBuffer(buffer, newLine);
+			stream.Seek(0, SeekOrigin.End);
+			stream.Write(buffer, 0, newLine.Length);
 		}
 	}
 }
